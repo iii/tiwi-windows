@@ -1,5 +1,3 @@
 # Windows
 
----
-
 * Samenvatting model examenvragen
