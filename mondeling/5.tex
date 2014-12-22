@@ -1,0 +1,80 @@
+\chapter{Active Directory domeinstructuren}
+
+\section{Wat is de bedoeling van vertrouwensrelaties?}
+
+Tussen 2 domeinen kan een vertrouwensrelatie tot stand gebracht worden, zodat de
+gebruikers in het ene, trusted domein kunnen geverifieerd worden door de
+domeincontroller in het andere, trusting domein.
+
+\section{Bespreek de verschillende soorten vertrouwensrelaties.}
+
+\subsection{Expliciete vertrouwensrelaties}
+
+manuele configuratie is hierbij vereist
+
+\begin{description}
+	\item[Forest trust] minimaal windows Server 2003 forst functioneel
+		niveau nodig
+	\item[Realm trust] Veralgemening van het vorige geval, Vertrouwenspaden
+		tussen Windows Server 2008 domeinen en willekeurige Kerbos v5
+		realms
+	\item[Verkorte vertrouwensrelaties] Aanvullende transitieve
+		vertrouwensrelaties tussen domeinen in complexe trees of forests
+	\item[Externe vertrouwensrelatie] Enkelvoudige vertrouwensrelatie tussen
+		domeinen
+\end{description}
+
+\subsection{Automatische vertrouwensrelaties}
+
+\begin{itemize}
+	\item Tussen domein en child domein
+	\item eigenschappen:
+		\begin{itemize}
+			\item Kunnen niet verbroken worden
+			\item bi-directioneel
+			\item transitief
+		\end{itemize}
+	\item tussen trees van hetzelfde forest
+	\item opmerking: in NT4 zijn vertrouwensrelaties:
+		\begin{itemize}
+			\item niet bi-directioneel
+			\item niet transitief
+		\end{itemize}
+\end{itemize}
+
+\section{Op welke diverse manieren kunnen vertrouwensrelaties gecreëerd en
+gecontroleerd worden? Bespreek ook de optionele configuratiemogelijkheden}
+
+enkel de expliciete vertrouwensrelaties moeten manueel geconfigureerd worden.
+
+\begin{enumerate}
+	\item Active Directory Domains en Trust snap-in
+		\begin{itemize}
+			\item Beschikbaar via domain.msc
+			\item Je moet hiervoor beschikken over een
+				gebruikersaccount met machtigingen in beide
+				domeinen en ook de domeinnamen van beide
+				domeinen
+		\end{itemize}
+	\item Via de command-line
+		\begin{itemize}
+			\item Met netdom trust kan je nieuwe vertrouwensrelaties
+				toevoegen
+			\item Met netdom query trust krijg je een overzicht van
+				de huidige toestand van de vertrouwensrelaties
+		\end{itemize}
+\end{enumerate}
+
+\section{Welke verschillen zijn er in praktijk tussen NT 4.0 en Windows Server
+domeinstructuren? Bespreek de alternatieve mogelijkheden bij de conversie van
+een NT 4.0 domeinstructuur naar een Windows Server omgeving.}
+
+\begin{itemize}
+	\item WServer zal automatisch een bi-directionele vertrouwensrelatie
+		leggen tussen een domein en zijn kinddomeinen. In NT 4.0 moet
+		dit manueel gebeuren
+	\item WServer vertrouwensrelaties zijn transitief, in NT 4.0 is dit niet
+		zo
+	\item WServer maakt automatisch vertrouwensrelaties aan tussen de
+		verschillende trees van eenzelfde forest
+\end{itemize}

@@ -1,0 +1,76 @@
+\chapter{Structuur van Active Directory gegevens}
+
+\section{Bespreek de diverse namen die alle Active Directory objecten
+identificeren.}
+
+\begin{enumerate}
+	\item Relative Distinguished Name (RDN)
+	\item Distinguished Name (DN)
+		\begin{itemize}
+			\item uniek en belangrijk voor de werking van het LDAP protocol
+			\item naamconventie staat bekend als attributed mapping
+			\item komma (,) is scheidingsteken
+			\item naamgeving van beneden (object) naar boven (root)
+		\end{itemize}
+	\item Canonical name
+	\item Globaal Uniek ID (GUID)
+\end{enumerate}
+
+\section{Wat zijn SPN objecten? Bespreek de aanvullende naamgeving voor deze
+objecten.}
+
+Security Principal Objects (SPN) zijn AD-objecten waaraan Security ID's (SID)
+zijn goegewezen. Deze worden gebruikt voor het verlenen van toegang tot
+domeinbronnen.
+
+\subsection{Aanvullende naamgeving voor gebruikersaccounts}
+
+\begin{itemize}
+	\item User Principal Name (UPN)
+	\item volgende 2 aan elkaar gekoppeld met \-teken
+		\begin{itemize}
+			\item NetBIOS naam voor het domein
+			\item SAM accountnaam
+		\end{itemize}
+\end{itemize}
+
+\subsection{Aanvullende naamgeving voor computeraccounts}
+
+\begin{itemize}
+	\item SAM accountnaam
+	\item DNS hostname
+	\item Service Principal Name (SPN)
+\end{itemize}
+
+\section{Enkele veel gebruikte klassen vertonen nog meer identificerende
+attributen voor hun instanties. Bespreek deze klassen en attributen}
+
+\begin{itemize}
+	\item Common name (cn)
+	\item IDAPDisplayName
+	\item Object identifier (OID)
+\end{itemize}
+
+\section{In welke partities is de Active Directory informatie verdeeld? Geef de
+betekenis van elke partitie, hun onderlinge relatie, en de
+replicatiekarakteristieken erven.}
+
+\begin{itemize}
+	\item Domaingegevens
+	\item Configuratiegegevens
+	\item Het schema
+	\item Applicatiepartities
+\end{itemize}
+
+\subsection{Replicatiekarakteristieken}
+
+\begin{itemize}
+	\item Schema en configuratiegegevens worden gerepliceerd naar alle
+		domeincontrollers van het forest
+	\item Domeingegevens worden gerepliceerd naar alle domeincontrollers van
+		dat domein
+	\item Data van applicatiepartities wordt gerepliceerd op specifieke set
+		van domeincontrollers uit het forest
+	\item Replicatie van een subset van alle objecten in de domeingegevens van elk
+	\item domein worden gerepliceerd naar de global catalog
+\end{itemize}

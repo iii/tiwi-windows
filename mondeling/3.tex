@@ -1,0 +1,86 @@
+\chapter{classSchema objecten}
+
+\section{Bespreek het doel en de werking van classSchema objecten}
+
+\begin{itemize}
+	\item worden ook klassen of objectklassen genoemd
+	\item classSchema beschrijvan de directory objecten die gemaakt kunnen
+		worden
+	\item elk object in AD is een instantie van een objectklasse
+\end{itemize}
+
+\section{Hoe benadert Active Directory het mechanisme van overerving?}
+
+\begin{itemize}
+	\item Elke klasse afgeleid van een andere klasse, behalve TOP
+	\item Bij overerving worden alle kenmerken overgenomen van de
+		superklasse, ook alle structuur- en inhoudsregels.
+	\item Overname werkt recursief
+	\item Meervoudige overerving is zeer beperkt en enkel mogelijk door het
+		gebruik van hulpklassen.
+	\item hulpklassen zijn klassen die zelf geen objecten kunnen genereren
+	\item hulpklassen kunnen zowel statisch als dynamisch gebruikt worden
+\end{itemize}
+
+\section{Bespreek de diverse naamgevingen van classSchema objecten}
+
+is analoog als bij attributeSchema-objecten
+\begin{enumerate}
+	\item common name
+	\item GUID
+	\item LDAP display name
+	\item Object ID
+\end{enumerate}
+
+\section{Bespreek de belangrijkste kenmerken van classSchema objecten, en hoe
+die ingesteld kunnen worden.}
+
+\begin{itemize}
+	\item Inhoudregels definiëren kenmerken die beschikbaar zijn voor
+		objecten van een klasse
+		\begin{enumerate}
+			\item mustContain en systemMustContain
+			\item mayContain en systemMayContain
+			\item rDNAttID
+			\item defaultSecurityDescriptor
+			\item SystemOnly
+			\item isDefunct
+		\end{enumerate}
+
+	\item Structuurregels definiëren mogelijke hiërarchische relaties tussen
+		klassen of objecten
+
+		\begin{enumerate}
+			\item objectClassCategory
+			\item defaultObjectCategory
+			\item subClassOf
+			\item auciliaryClass en systemAuxiliaryClass
+			\item possSuperiors en systemPossSuperiors
+		\end{enumerate}
+\end{itemize}
+
+\section{Welke andere types objecten bevat het Active Directory schema, en wat
+is hun bedoeling?}
+
+\begin{itemize}
+	\item attributeSchema objecten
+	\item Het abstracte schema
+\end{itemize}
+
+\section{Hoe en met welke middelen kan het Active Directory schema uitgebreid
+worden?}
+
+\begin{enumerate}
+	\item active Directory Schema snap-in
+	\item ldifde en csvde
+	\item Programma's via LDAP of ADSI interface
+\end{enumerate}
+
+\subsection{hoe wijzigingen aanbrengen}
+
+\begin{itemize}
+	\item foutieve wijzigingen kunnen het volledige domein onbruikbaar maken
+	\item schemauitbreiding geldt voor het gehele forest
+	\item enkel gemachtigde gebruikers kunnen deze wijzigingen doorvoeren
+	\item bieden wel veel potentieel dus moeten niet compleet worden genegeerd
+\end{itemize}
