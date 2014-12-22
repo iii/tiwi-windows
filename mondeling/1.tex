@@ -3,38 +3,107 @@
 \section{Bespreek de diverse namen die alle Active Directory objecten
 identificeren.}
 
-\begin{enumerate}
-	\item Relative Distinguished Name (RDN)
-	\item Distinguished Name (DN)
-		\begin{itemize}
-			\item uniek en belangrijk voor de werking van het LDAP protocol
-			\item naamconventie staat bekend als attributed mapping
-			\item komma (,) is scheidingsteken
-			\item naamgeving van beneden (object) naar boven (root)
-		\end{itemize}
-	\item Canonical name
-	\item Globaal Uniek ID (GUID)
-\end{enumerate}
+\begin{description}
+	\item[Relative Distinguished Name (RDN)] zorgt voor de unieke
+		identificatie binnen de container waar het object zich in
+		bevindt. bv \begrip{cn=beelzebub} is RDN van computer beelzebub.
+		De RDN wordt opgeslagen in het kenmerk \begrip{cn} van het
+		object.
+	\item[Distinguished Name (DN)] is opgebouwd uit de RDN van het object
+		zelf en de RDNs van alle containerobjecten waarvan het object in
+		de hiërarchische indeling deel van uitmaakt. Dit zorgt voor een
+		unieke naamgeving voor elk object. Elk opeenvolgend deel van de
+		DN heeft de vorm \begrip{attribuut=waarde}, staat bekend als
+		\engels{attributed naming}. De delen worden gescheiden door een
+		komma. De DN naamgeving werkt van beneden (objectnaam) naar
+		boven (root van AD). bv
+		\begrip{cn=beelzebub,ou=iii,dc=hogent,dc=be}
+		De DN is belangrijk voor de werking van het LDAP protocol, bv
+		belangrijk bij het programmeren van scriptcode die AD
+		rechtstreeks aanspreekt. Een LDAP-cliënt kan query's op
+		willekeurige objecten uitvoeren door een LDAP URL te gebruiken
+		met de vorm \begrip{LDAP://server DNS naam/object DN}. De DN
+		wordt opgeslagen in het kenmerk \begrip{distinguishedName} van
+		het object.
+	\item[Canonical name] wordt op dezelfde manier samengesteld als de DN,
+		maar wordt op een eenvoudigere manier weergegeven:
+		\begrip{hogent.be/iii/beelsebub}. De meeste hulpmiddelen in
+		Active Directory tonen de canonieke naam, in plaats van de DN.
+		Het wordt opgeslagen in het kenmerk \begrip{canonicalName} van
+		het object.
+	\item[Globaal Uniek ID (GUID)] is een 128-bit getal dat niet kan
+		gewijzigd worden. Het wordt bepaald bij de creatie van het
+		object. Ook als het object verplaatst of gewijzigd wordt zal de
+		GUID niet veranderen. De GUID is beschikbaar voor verwijzing van
+		externe processen en programmeerfuncties. Het wordt opgeslagen
+		in het kenmerk \begrip{objectGUID} van het object.
+\end{description}
 
 \section{Wat zijn SPN objecten? Bespreek de aanvullende naamgeving voor deze
 objecten.}
 
 Security Principal Objects (SPN) zijn AD-objecten waaraan Security ID's (SID)
-zijn goegewezen. Deze worden gebruikt voor het verlenen van toegang tot
-domeinbronnen.
+zijn goegewezen. De SID wordt opgeslagen in het \begrip{objectSid} kenmerk.
+SPN objecten worden, na aanmelding op het netwerk, gebruikt voor het verlenen
+van toegang tot domeinbronnen. Ze zijn van toepassing op gebruikeraccounts,
+computeraccounts, groepen en domeinen. SIDs zijn uniek, ook in de tijd: nieuw
+aangemaakte accounts kunnen zo nooit de rechten krijgen van een oud account.
+
+SIDs worden meestal voorgesteld dooe een hiërarchische string getallen
+gescheiden door koppeltekens. bv \begrip{S-1-5-x-y-z-500} S-1-5 is de standaard
+prefix, bestaande uit een \engels{Revision Level} en een \engels{Authority
+Identifier}. X, y en z zijn 32-bit getallen specifiek voor het domein
+(\engels{Domain Subauthority Identifier}). 500 is een \engels{relative ID}
+(RID), dat nar het feitelijk object verwijst.
+
+Bij verplaatsing binnen hetzelfde domein blijft de SID ongewijzigd. Bij
+verplaatsing naar een ander domein zal de SID we veranderen. De GUID blijft
+altijd ongewijzigd. Om te vermijden dat een gebruiker hierna zijn toegang tot
+domeinbronnen zou verliezen worden alle vorige SIDs van het object bijgehouden
+in het \begrip{sIDHistory} kenmerk.
 
 \subsection{Aanvullende naamgeving voor gebruikersaccounts}
 
+De RDN, DN en canonieke naam zijn ongeschikt als aanmeldingsnaam omdat ze bij
+verplaatsing veranderen. SID en GUID zijn mits hun numerieke karakter ook niet
+geschikt hiervoor. Elke gebruikersaccount heeft ook een \engels{User Principal
+Name} (UPN), aka aanmeldingsnaam. Wordt bij het aanmaken van het account
+ingevoerd door de beheerder en opgeslagen in het \engels{userPrincipalName}
+kenmer. Dit moet uniek zijn binnen het forest. UPN bestaat standaard uit de RDN
+van de gebruiker en de UPN suffix, gekoppeld met het @-teken.
+Voor de UPN suffix zijn er een aantal alternatieven:
 \begin{itemize}
-	\item User Principal Name (UPN)
-	\item volgende 2 aan elkaar gekoppeld met \-teken
-		\begin{itemize}
-			\item NetBIOS naam voor het domein
-			\item SAM accountnaam
-		\end{itemize}
+	\item Standaard wordt de DNS naam van het domein genomen
+	\item Dikwijlst kiest men voor de DNS naar van het root domein van het
+		forest
+	\item Kan ook een willekeurige alternatieve naam zijn, als deze op
+		voorhand geregistreerd is door een beheerder.
 \end{itemize}
 
+UPN is de meest geschikte aanmeldingsnaam maar wordt maar zelden gebruikt door
+compatibiliteit met vroegere NT versies. Meestal wordt als aanmeldingsnaam de
+NetBIOS naam van het domein en de SAM accountnaam van de gebruiker, gekoppeld
+met \, genomen. De NetBIOS naam bestaat uit max 15 karakters, standaard de meest
+linkse component van de DNS naam. De SAM accountnaam bestaat uit max 20
+karakters, standaard de eerste 20 bytes van de RDN. NetBIOS naam moet uniek zijn
+in het forest, SAM accountnaam uniek in het domein en wordt opgeslagen in het
+\begrip{sAMAccountName} kenmerk
+
 \subsection{Aanvullende naamgeving voor computeraccounts}
+
+Elke computeraccount in AD heeft behalve zijn RDN, DN, canonieke naam, GUID en
+SID ook een SAM accountnaam (ook NetBIOS computernaam genoemd), een DNS hostnaam
+en een \engels{Service Principal Name} (SPN).
+SAM naam bestaat uit eerste 15 bytes van RDN, gevolgd door een \$, en wordt
+opgeslagen in het sAMAccountName kenmerk.
+De DNS hostname wordt opgeslagen in het dnsHostName kenmerk en bestaat
+standaard uit de eerste 15 tekens van de RDN en de suffix van de primaire DNS.
+De SPN is essentieel tijdens de wederzijdse verificatie van client software en
+de server die een bepaalde service biedt: de client zoekt een computeraccount op
+aan de hand van de SPN naam van de service waarmee hij een verbinding tot stand
+wil brengen. De SPN wordt bepaald door het multi-valued
+\engels{servicePrincipalName} kenmerk, oa samengesteld op basis van DNS naame en
+eventueel SRV records die naar het toestel verwijzen.
 
 \begin{itemize}
 	\item SAM accountnaam
