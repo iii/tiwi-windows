@@ -105,12 +105,6 @@ wil brengen. De SPN wordt bepaald door het multi-valued
 \engels{servicePrincipalName} kenmerk, oa samengesteld op basis van DNS naame en
 eventueel SRV records die naar het toestel verwijzen.
 
-\begin{itemize}
-	\item SAM accountnaam
-	\item DNS hostname
-	\item Service Principal Name (SPN)
-\end{itemize}
-
 \section{Enkele veel gebruikte klassen vertonen nog meer identificerende
 attributen voor hun instanties. Bespreek deze klassen en attributen}
 
@@ -124,22 +118,57 @@ attributen voor hun instanties. Bespreek deze klassen en attributen}
 betekenis van elke partitie, hun onderlinge relatie, en de
 replicatiekarakteristieken erven.}
 
-\begin{itemize}
-	\item Domaingegevens
-	\item Configuratiegegevens
-	\item Het schema
-	\item Applicatiepartities
-\end{itemize}
+De directory wordt enkel opgeslagen op domeincontrollers. Op elke
+domeincontroller wordt een kopie opgeslagen van de directory voor het domein
+waarin de controller zich bevindt. De informatie die in de directory is
+opgeslagen, is fysiek verdeeld in minimaal drie categorieën: \begrip{directory
+partities}
+\begin{description}
+	\item[Domaingegevens] bevatten de eigenlijke informatie over objecten in
+		het domein (zoals gedeelde bronnen, gebruiker- en
+		computeraccounts). Bij de installatie worden een aantal
+		standaard objecten geinstalleerd door het systeem, bv de
+		beheerderaccount. Wordt gedeeld per domein, dus er zijn evenveel
+		partities met domeingegevens als er domeinen zijn in het forest.
+		De domeingegevens worden niet gedistribueerd naar andere
+		domeinen. Er wordt we een subset van alle kenmerken van alle
+		domeinen bijgehouden in de globale catalogus.
+	\item[Configuratiegegevens] beschrijven de fysieke topologie van de
+		directory. Dit bevat onder andere een lisjt van alle
+		domeinstructuren, de locaties van de domeincontrollers en de
+		global catalog controllers, de sites en de replicatietopologie.
+		De meeste gemeenschappelijke instellingen van het ganse forest
+		worden hierin opgeslagen, als kenmerken van objecten. De
+		configuratiegegevens gelden voor alle domeinen in het forest.
+	\item[Het schema] is de formele definitie van alle objecten en
+		kenmerkgegevens die kunnen opgeslagen worden in de directory.
+		Dit schema is uniek voor alle domeinen in het forest.
+	\item[Applicatiepartities] dit is een 4e vorm van partities die vanaf
+		Windows server 2003 kan aangemaakt worden. Een deel van de AD
+		gegevens kan in één of meerdere gescheiden applicatiepartities
+		worden ondergebracht, dit is interessant voor dynamische
+		objecten. Ze kunnen geen SPN objecten bevatten.  Objecten binnen
+		de applicatie partitie kunnen niet verplaatst worden buiten de
+		partitie. bv voor DNS is er een aparte applicatiepartitie.
+\end{description}
 
-\subsection{Replicatiekarakteristieken}
+Het schema en de configuratiegegevens zijn containerobjecten in het root domein
+van het forest. Ook de eventuele applicatiepartities vormen containerobjecten
+ten opzichte van de overeenkomstige domeingegevens. Dit is een logische
+structurering, fysische bestaat het wel uit meerdere bestanden.
 
-\begin{itemize}
-	\item Schema en configuratiegegevens worden gerepliceerd naar alle
-		domeincontrollers van het forest
-	\item Domeingegevens worden gerepliceerd naar alle domeincontrollers van
-		dat domein
-	\item Data van applicatiepartities wordt gerepliceerd op specifieke set
-		van domeincontrollers uit het forest
-	\item Replicatie van een subset van alle objecten in de domeingegevens van elk
-	\item domein worden gerepliceerd naar de global catalog
-\end{itemize}
+AD servers wisselen continu gegevens uit. Elke partitie in de directory vormt
+een aparte eenheid voor replicatie, waarbij telkens een specifieke groep
+controllers hoort. Het schema en configuratiegegevens worden gerepliceerd naar
+alle domeincontrollers in het forest. De domeingegevens worden logischerwijs
+binnen het domein gerepliceerd. Applicatiepartities worden gerepliceerd tussen
+een eigen deelverzameling specifiek hiervoor geconfigureerde domeincontrollers
+van het forest. DNS partities kunnen zo bv enkel naar DNS nameservers
+gerepliceerd worden.
+
+De koppeling tussen een partitie en zijn replicerende domeincontrollers wordt
+bijgehouden in het \begrip{msDS-NC-Replica-Locations} kenmerk van het
+overeenkomstige crossref object in de configuratiegegevens.
+
+Een subset van de kenmerken van alle objecten in de domeingegevens van elk
+domein in het forest worden gerepliceerd naar de globale catalogus.
