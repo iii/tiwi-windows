@@ -3,66 +3,189 @@
 \section{Bespreek het doel en de werking van attributeSchema objecten. Hoe
 kunnen deze objecten het best geraadpleegd en gewijzigd worden?}
 
+Het AD schema is de formele definitie van alle objecten en kenmerkgegevens die
+kunnen opgeslagen worden in de directory. Het is een set regels waarmee de
+klassen van objecten en kenmerken in de directory, de beperkingen en limieten op
+exemplaren van deze objecten en de notatie van de namen van de objecten
+gedefinieerd worden. Deze definities zelf worden als objecten opgeslagen in de
+schema container, ze kunnen zo op eenzelfde manier beheerd worden als alle AD
+objecten. Er zijn twee types definities:
+\begin{description}
+	\item[Kenmerken] worden apart van klassen gedefinieerd.
+	\item[Klassen] beschrijven de directory objecten die gemaakt kunnen
+		worden. Elke klasse heeft een verzameling kenmerken.
+\end{description}
+
 \subsection{Doel en werking}
 
-\begin{itemize}
-	\item attributeSchema objecten definiëren de kenmerken die in klassen
-		worden gebruikt
-	\item Elk kenmerk wordt slechts eenmaal gedefinieerd en kan in meerdere
-		klassen worden hergebruikt.
-\end{itemize}
+Een attributeSchema object is een object waarmee een kenmerk wordt ingesteld en
+waarmee beperkingen opgelegd worden aan objecten die een exemplaar zijn van de
+klasse met dit kenmerk. Elk kenmerk moet zo maar eenmaal gedefinieerd worden,
+maar kan toch in meerdere klassen gebruikt worden.
 
 \subsection{Raadplegen en wijzigen}
 
-\begin{itemize}
-	\item via ADSIEdit
-	\item snap-in Active Directory Schema
-\end{itemize}
+Voor ontwikkelings- en testdoeleinden kun je het AD schema bekijken en wijzigen
+met adsiedit.msc, of met een specifiek hiervoor ontwikkelde snap-in, Active
+Directory Schema. Er is geen standaard MMC console die deze snap-in bevat. Het
+wordt geimplementeerd door schmmgmt.dll, welke na installatie nog moet
+geregistreerd worden met regsvr32. De Schema snap-in laat toe, op een meer
+eenvoudige wijze dan adsiedit.msc, om zowel kenmerken als klassen te bekijken,
+te wijzigen en te creëeren. AD ondersteunt geen verwijdering van schemaobjecten.
+Deactiveren is wel mogelijk, toch voor eigen ontwikkelde schemaobjecten, niet
+voor de standaard meegeleverde objecten.
 
 \section{Bespreek de diverse naamgevingen van attributeSchema objecten}
 
-\begin{enumerate}
-	\item common name (cn)
-	\item GUID
-	\item LDAP display name
-	\item Object identifier (OID)
-\end{enumerate}
+Alle attributeSchema objecten in het schema hebben een viervoudige naamgeving,
+die alle vier uniek en gestandaardiseerd zijn:
+\begin{description}
+	\item[common name (cn)] is de RDN van het attributeSchema object in de
+		Schema container. Opgeslagen in een kenmerk van het
+		attributeSchema object met als LDAP display naam \begrip{cn}.
+	\item[GUID] van het kenmerk is onafhankelijk van de GUID van het
+		attributeSchema object en kan automatisch gegenereerd worden bij
+		creatie van een nieuw kenmerk. Hetzelfde kenmerk zal dan wel een
+		ander GUID hebben in verschillende forests. Om dit te vermijden
+		kan best op voorhand een GUID gegenereerd worden. Opgeslagen in
+		een kenmerk van het attributeSchema object met als LDAP display
+		naam \begrip{schemaIDGUID}.
+	\item[LDAP display name] is belangrijk voor programmatische toegang.
+		Deze kan dikwijls, maar niet altijd, uit de common name afgeleid
+		worden door alle streepjes te verwijderen, en de eerste letter
+		niet in hoofdletters te vermelden. Opgeslagen in een kenmerk van
+		het attributeSchema object met als LDAP display naam
+		\begrip{IDAPDisplayName}.
+	\item[Object identifier (OID)] die geldt als interne representatie.
+		X.500 IDs worden verleend door speciale autoriteiten, en zijn
+		gegarandeerd uniek in alle netwerken wereldwijd. Het is een
+		decimale reeks met punten, en worden hiërarchisch toegekend. Je
+		kan een OID tak aanvragen bij de regionale ISO vertegenwoordiger
+		of je kan een uniek OID laten genereren in een microsoft subtak
+		met oidgen. Opgeslagen in een kenmerk van het attributeSchema
+		object met als LDAP display naam \begrip{attributeID}.
+\end{description}
 
 \section{Bespreek de belangrijste kenmerken van attributeSchema objecten, en hoe
 die ingesteld kunnen worden.}
 
-\begin{enumerate}
-	\item attributeSyntax en oMSyntax
-	\item rangeLower en rangeUpper
-	\item isSingleValued
-	\item searchFlags
-	\item systemFlags
-	\item isMemberOfPartialAttributeSet
-	\item linkID
-\end{enumerate}
+\begin{description}
+	\item[attributeSyntax en oMSyntax] De syntax van het kenmerk bepaalt het
+		data type, en zo het soort gegevens dat het kenmerk kan
+		bevatten. Er zijn 26 mogelijkheden waarvan er maar 18 momenteel
+		gebruikt worden in AD. Het is niet mogelijk om een nieuwe syntax
+		te definiëren. Omdat men in AD bepaalde noodzakelijke data types
+		niet van elkaar kan onderscheiden op basis van louter de X.500
+		syntax is er een aanvullende integer waarde voorzien: OMSyntax.
+	\item[rangeLower en rangeUpper] Bepalen lengte- of bereikbeperkingen van
+		kenmerken.
+	\item[isSingleValued] Kenmerken kunnen, afhankelijk van dit kenmerk, één
+		waarde of meerdere niet-geordende waarden hebben. bv objectClass
+		bevat de specifieke klasse van het object en de opeenvolgende
+		klassen waarvan de klasse is afgeleid.
+	\item[searchFlags] Dit bevat binaire informatie, waarbij de meeste bits
+		bepalen of het kenmerk op een of andere manier geïndexeerd
+		wordt. Als je een kenmerk indexeert, kun je in Active Directory
+		sneller objecten zoeken die dat kenmerk hebben. Alle exemplaren
+		van het kenmerk worden dan toegevoegd aan de index, niet alleen
+		de exemplaren die lid zijn van een bepaalde klasse.
+		\begin{itemize}
+			\item De laagste bit wordt meestal gezet en bepaalt
+				eenvoudige indexering van de waarde van het
+				kenmerk.
+			\item De tweede laagste bit zorgt voor een containerized
+				index en zorgt dat objecten snel kunnen gevonden
+				worden binnen een specifieke container. De
+				waarde van het kenmerk wordt hiervoor
+				gecombineerd met de identificatie van de
+				container.
+			\item Het zetten van de derde laagste bit laat ambiguous
+				name resolution (ANR) toe. Bij opzoekingen waar
+				men zoek gaat naar objecten waarbij minstens één
+				kenmerk uit een verzameling kenmerken een
+				specifieke waarde aanneemt. Bv voor displayName,
+				givenName \& name staat de ANR bit op 1.
+			\item Instellen van de zesde laagste bit versnelt
+				opzoekingen waarin kenmerken met jokertekns
+				vermeld worden.
+		\end{itemize}
+		De vijfde laagste bit heeft niks met indexering te maken en
+		bepaalt of de waarde van attribuut behouden blijft bij het
+		kopieren van het object.
+	\item[systemFlags] is een binair informatieveld. De laagste bit bepaalt
+		of het kenmerk gerepliceerd wordt naar andere domeincontrollers.
+		Niet-gerepliceerde kenmerken worden dikwijls gebruikt om lokale
+		caches te implementeren. Wordt ook gebruikt voor relatief
+		dynamische kenmerken waarvan de waarde frequent wijzigt, zoals
+		lastLogon en LastLogoff. LastLogonTimestamp wordt wel
+		gerepliceerd.
+		De derde laagste bit wijst op een geconstrueerd attribuut. Een
+		geconstrueerd attribuut wordt niet opgeslagen in AD, maar wordt
+		telkens opnieuw berekend. Bv canonicalName en parentGUID
+	\item[isMemberOfPartialAttributeSet] bepaalt of het kenmerk in de global
+		catalog opgenomen wordt of niet.
+	\item[linkID] Sommige kenmerken vormen koppels bestaande uit
+		forward-link en back-link kenmerken. Indien de waarde van het
+		forward-link kenmerk van een object verwijst naar de DN van een
+		ander object, dan wordt het back-link kenmerk van dat object
+		automatisch in- of aangevuld met de DN van het eerste object, en
+		vice versa. Gebruikers met voldoende machtigingen kunnen enkel
+		de waarde van forwart-link kenmerken rechtstreeks wijzigen.
+		Back-link kenmerken vallen volledig onder het beheer van de
+		security accounts manager component van windows server.
+\end{description}
 
 \section{Welke andere types objecten bevat het Active Directory schema, en wat
 is hun bedoeling?}
 
-\begin{enumerate}
-	\item classSchema objecten
-	\item het abstracte schema
-\end{enumerate}
+\begin{description}
+	\item[classSchema objecten] Net zoals voor kenmerken bevindt zich voor
+		alle klassen een classSchema object in het schema. De kenmerken
+		van classSchema objecten definieren de klasse, en bevatten twee
+		soorten regels: structuurregels definieren de hiërarchische
+		relaties tussen hetzij klassen, hetzij tussen objecten,
+		inhoudsregels kenmerken definiëren die beschikbaar zijn voro een
+		exemplaar van die klasse.
+	\item[het abstracte schema] Naast classSchema en attributeSchema
+		objecten bevat het schema nog één ander object: een subSchema
+		object, het abstracte schema genoemd. Het heeft als RDN
+		Aggregate en bevat een alternatieve, compacte voorstelling van
+		het gehele schema. De bedoeling is om vereenvoudigde schema
+		gegevens ter beschikking te stellen aan LDAP cliënts, zonder
+		zich over veel implementatie details hoeven te bekommeren.
+		Gecombineerd met de Active Directory Service Interfaces (ADSI)
+		biedt het abstracte schema een toegang naar het schema, die veel
+		meer high-level is dan via het reële schema.
+\end{description}
 
 \section{Via welke attributen kun je de klasse van een willekeurig Active
-	Directory object achterhalen? Hoe moet je op zoek gaan naar alle
-	objecten van een bepaalde klasse? Illustreer aan de hand van relevante
-voorbeelden.}
+Directory object achterhalen? Hoe moet je op zoek gaan naar alle objecten van
+een bepaalde klasse? Illustreer aan de hand van relevante voorbeelden.}
 
-\begin{itemize}
-	\item ObjectClass, is multi-valued en niet geïndexeerd
-	\item objectCategory, is single-valued en is geïndexeerd
-\end{itemize}
+\begin{description}
+	\item[ObjectClass] is multi-valued en niet geïndexeerd. het bevat niet
+		alleen de klasse van het object zelf, maar ook alle
+		hiërarchische superklassen (uitgezonderd de statische
+		hulpklassen).
+	\item[objectCategory] is single-valued en is geïndexeerd. Het wordt
+		echter niet noodzakelijk ingevuld met de klasse van het object,
+		het bevat de meest typische vertegenwoordiger uit de verzameling
+		bestaande uit de klasse zelf en alle hiërarchische superklassen.
+\end{description}
 
 \subsection{voorbeelden}
 
-\begin{enumerate}
-	\item voor opzoeken van printer best objectCategory=printQueue, ivm indexering
-	\item objectCategory=person geeft objecten van klasse user en klasse contact
-	\item objectClass=user zal ook objecten van klasse computer opleveren
-\end{enumerate}
+Voor het opzoeken van printers is de selectie van objecten, waarvoor de
+objectCategory ingesteld is op printQueue, duidelijk de beste keuze, aangezien
+dit de opzoeking toelaat om op indexering een beroep te doen.
+
+Indien men analoog gebruikers zou willen opzoeken via objecten, waarvoor de
+objectCategory ingesteld is op person, dan is dit weliswaar een performante
+oplossing, maar zal dit niet alleen objecten van de klasse user opleveren, maar
+ook objecten van de klasse contact. Om deze uit te sluiten, zou men kunnen
+overwegen om objecten te selecteren, waarvoor user tot de objectClass behoort.
+Dit heeft echter het nadeel dat de zoekopdracht nu niet alleen objecten van de
+klasse user zal opleveren, maar ook objecten van de ervan afgeleide klasse
+computer. De enige juiste mogelijkheid in dit geval is om op zoek te gaan naar
+objecten waarvoor zowel de objectCatergory ingesteld is op person, als user tot
+de objectClass behoort.

@@ -2,77 +2,137 @@
 
 \section{Bespreek het doel en de werking van classSchema objecten}
 
-\begin{itemize}
-	\item worden ook klassen of objectklassen genoemd
-	\item classSchema beschrijvan de directory objecten die gemaakt kunnen
-		worden
-	\item elk object in AD is een instantie van een objectklasse
-\end{itemize}
+Klassen zijn zelf ook objecten in het schema: voor elke klasse in het schema is
+er een classSchema object waarmee de klasse ingesteld wordt. Ze beschrijven de
+directory objecten die gemaakt kunnen worden.
+De kenmerken van classSchema objecten definiëren de klasse, en bevatten twee
+soorten regels: met structuurregels definieer je de mogelijke hiërarchische
+relaties tussen hetzij klassen, hetzij tussen objecten, terwijl inhoudsregels
+kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
+Door middel van overname kunnen van bestaande klassen nieuwe klassen aangemaakt
+worden.
 
 \section{Hoe benadert Active Directory het mechanisme van overerving?}
 
-\begin{itemize}
-	\item Elke klasse afgeleid van een andere klasse, behalve TOP
-	\item Bij overerving worden alle kenmerken overgenomen van de
-		superklasse, ook alle structuur- en inhoudsregels.
-	\item Overname werkt recursief
-	\item Meervoudige overerving is zeer beperkt en enkel mogelijk door het
-		gebruik van hulpklassen.
-	\item hulpklassen zijn klassen die zelf geen objecten kunnen genereren
-	\item hulpklassen kunnen zowel statisch als dynamisch gebruikt worden
-\end{itemize}
+Door overerving kan je van bestaande klassen nieuwe klassen maken. De
+onmiddelijke superklasse van een klasse wordt bepaald door het kenmerk
+subClassOf van het classSchema object. Speciale superklasse Top waar alle
+klassen (onrechtstreeks) van worden afgeleid. Een subklasse neemt de kenmerken
+van de superklasse over, inclusief de structuurregels en de inhoudsregels.
+Overname werkt recursief.
+Een klasse kan enkel kenmerken overnemen van zijn onmiddelijke superklasse en
+van speciaal hiervoor bestemde hulpklassen. Hulpklassen zijn klassen die zelf
+geen kenmerken kunnen genereren.
+De kenmerken auxiliaryClass en systemAuxiliaryClass van elk classSchema object
+bevatten alle mogelijke klassen waarvan deze klasse kenmerken kan overnemen.
+Kenmerken met een LDAP display naam die beginnen met system zijn in
+tegenstelling tot de corresponderende kenmerken niet wijzigbaar door beheerders
+van het schema.
+Het gebruik van hulpklassen kan zowel statisch (met auxiliaryClass kenmerk) als
+dynamisch (hulpklasse opgeven bij creatie) gebeuren.
 
 \section{Bespreek de diverse naamgevingen van classSchema objecten}
 
-is analoog als bij attributeSchema-objecten
-\begin{enumerate}
-	\item common name
-	\item GUID
-	\item LDAP display name
-	\item Object ID
-\end{enumerate}
+Alle classSchema objecten in het schema hebben een viervoudige naamgeving, die
+alle vier uniek en gestandaardiseerd zijn:
+\begin{description}
+	\item[common name] is de RDN van het classSchema object in de schema
+		container. Opgeslagen in een kenmerk van het classSchema object
+		met als LDAP display naam \begrip{cn}.
+	\item[GUID] van de klasse is onafhankelijk van de GUID van het
+		classSchema object en kan automatisch gegenereerd worden bij
+		creatie van een nieuwe klasse. Opgeslagen in een kenmerk van het
+		classSchema object met als LDAP display naam
+		\begrip{schemaIDGUID}.
+	\item[LDAP display name] is belangrijk voor programmatische toegang.
+		Deze kan dikwijls, maar niet altijd, uit de common name afgeleid
+		worden door alle streepjes te verwijderen, en de eerste letter
+		niet in hoofdletter te vermelden. Opgeslagen in een kenmerd van
+		het classSchema object met als LDAP display naam
+		\begrip{IDAPDisplayName}.
+	\item[Object ID] die geldt als interne representatie.
+		X.500 IDs worden verleend door speciale autoriteiten, en zijn
+		gegarandeerd uniek in alle netwerken wereldwijd. Het is een
+		decimale reeks met punten, en worden hiërarchisch toegekend. Je
+		kan een OID tak aanvragen bij de regionale ISO vertegenwoordiger
+		of je kan een uniek OID laten genereren in een microsoft subtak
+		met oidgen. Opgeslagen in een kenmerk van het classSchema
+		object met als LDAP display naam \begrip{governsID}.
+\end{description}
 
 \section{Bespreek de belangrijkste kenmerken van classSchema objecten, en hoe
 die ingesteld kunnen worden.}
 
-\begin{itemize}
-	\item Inhoudregels definiëren kenmerken die beschikbaar zijn voor
-		objecten van een klasse
-		\begin{enumerate}
-			\item mustContain en systemMustContain
-			\item mayContain en systemMayContain
-			\item rDNAttID
-			\item defaultSecurityDescriptor
-			\item SystemOnly
-			\item isDefunct
-		\end{enumerate}
+De kenmerken van classSchema objecten definiëren de klasse, en bevatten twee
+soorten regels: met structuurregels definieer je de mogelijke hiërarchische
+relaties tussen hetzij klassen, hetzij tussen objecten, terwijl inhoudsregels
+kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
 
-	\item Structuurregels definiëren mogelijke hiërarchische relaties tussen
-		klassen of objecten
+\subsection{Inhoudsregels}
 
-		\begin{enumerate}
-			\item objectClassCategory
-			\item defaultObjectCategory
-			\item subClassOf
-			\item auciliaryClass en systemAuxiliaryClass
-			\item possSuperiors en systemPossSuperiors
-		\end{enumerate}
-\end{itemize}
+\begin{enumerate}
+	\item De mustContain en systemMustContain kenmerken bevatten de lijst
+		met kenmerken die verplicht zijn in elk exemplaar van de klasse.
+		Een kenmerk is verplicht van zodra het verplicht is in één van
+		de hiërarchische superklassen van de klasse, ook al is het voor
+		de klasse zelf als optioneel gemarkeerd.
+	\item De mayContain en systemMayContain kenmerken bevatten de lijst met
+		kenmerken die optioneel zijn.
+	\item Het rDNAttID kenmerk bepaalt welk kenmerk van een klasse gebruikt
+		wordt om de RDN van objecten te bepalen. Meestal staat dit
+		kenmerk ingesteld op de waarde cn (common name).
+	\item Het defaultSecurityDescriptor kenmerk bepaalt de expliciete
+		machtigingen die gelden voor objecten van deze klasse. Dit kan
+		een eenvoudige oplossing bieden om het beheer van specifieke
+		objecten te delegeren.
+	\item Als SystemOnly de waarde True heeft, kunnen de structuurregels en
+		de inhoudsregels van de klasse niet gewijzigd worden.
+	\item Met het isDefunct kenmerk kunnen schema objecten gedeactiveerd
+		worden. Zo kunnen er geen nieuwe exemplaren van de klasse
+		aangemaakt worden. AD ondersteunt geen verwijdering van
+		schemaobjecten.
+\end{enumerate}
+
+\subsection{Structuurregels}
+\begin{enumerate}
+	\item Het objectClassCategory kenmerk heeft een integer waardie die de
+		categorie van de klasse bepaalt: structurele klasse (1),
+		abstracte klasse (0 of 2) of hulpklasse (3). Abstracte klassen
+		zijn gelijkaardig aan structurele klassen, maar kunnen zelf geen
+		objecten genereren.
+	\item defaultObjectCategory
+	\item Het subClassOf kenmerk bepaald de onmiddelijke superklasse van een
+		klasse.
+	\item De auciliaryClass en systemAuxiliaryClass kenmerken bevatten alle
+		mogelijke hulpklassen waarvan deze klasse kenmerken kunnen
+		overnemen.
+	\item De possSuperiors en systemPossSuperiors kenmerken van elk
+		classSchema object definieren de mogelijke hiërarchische
+		relaties tussen objecten van een klasse. Het feit of een klasse
+		containerobjecten representeert, wordt niet bepaald door een
+		kenmerk van de klasse zelf: een structurele klasse kan
+		containerobjecten genereren van zodra een andere structurele
+		klasse ernaar verwijst in zijn systemPossSuperiors of
+		PossSuperiors kenmerken. De definitie van een klasse bepaalt
+		voor zijn objecten bijgevolg niet van welke klasse het objecten
+		kan bevatten als containerobject, maar wel van welke klasse de
+		objecten als container kunnen optreden.
+\end{enumerate}
 
 \section{Welke andere types objecten bevat het Active Directory schema, en wat
 is hun bedoeling?}
 
-\begin{itemize}
-	\item attributeSchema objecten
-	\item Het abstracte schema
-\end{itemize}
+\begin{description}
+	\item[attributeSchema objecten]
+	\item[abstracte schema]
+\end{description}
 
 \section{Hoe en met welke middelen kan het Active Directory schema uitgebreid
 worden?}
 
 \begin{enumerate}
 	\item active Directory Schema snap-in
-	\item ldifde en csvde
+	\item ldifde
 	\item Programma's via LDAP of ADSI interface
 \end{enumerate}
 

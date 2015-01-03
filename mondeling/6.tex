@@ -18,12 +18,70 @@ vragen telkens (voor zover relevant):
 		functie kan instellen, wijzigen en/of ongedaan maken?
 \end{itemize}
 
-\begin{enumerate}
-	\item Wordt server al dan niet opgenomen in een domein?
-	\item Vervult de in een domein opgenomen server al dan niet de functie
-		van domeincontroller?
-	\item Indien gekozen wordt voor domeincontroller, moet ook de functie
-		van globale catalogus ondersteund worden?
-	\item Welke domain controllers worden als RODC ingesteld?
-	\item Welke domeincontrollers vervullen de operations master rollen?
-\end{enumerate}
+\subsection{Wordt server al dan niet opgenomen in een domein?}
+
+Als een Windows Server toestel lid is van een werkgroep, niet van een domein,
+dan wordt het een zelfstandige server genoemd. Deze profiteren niet van de
+voordelen die AD biedt. Vooral indien er reeds een AD domeinstructuur aanwezig
+is, is de keuze snel gemaakt.
+
+\subsection{Vervult de in een domein opgenomen server al dan niet de functie van
+domeincontroller?}
+
+Een in een domein opgenomen server die de functie van domeincontroller niet
+vervult, wordt een lidserver (member server) genoemd. Meestal fungeren
+lidservers als file servers, toepassingsservers, database servers, web servers,
+firewalls, routers of een combinatie hiervan. In Windows Server 2008+ worden
+dergelijke functies gegroepeerd op drie niveau's:
+\begin{itemize}
+	\item Server rollen (DNS, DHCP, ...) en Web Server implementeren
+		primaire serverfuncties.
+	\item Sommige, meer complexe, server rollen bieden optionele
+		componenten, vertolkt door role services.
+	\item Features (Powershell, SNMP, backup, ...) zorgen voor meer
+		ondersteunende functies.
+\end{itemize}
+Men kan aanvullende server rollen, rol services en features configureren via
+respectievelijk de Add Roles, Add Role Services en Add Features wizards van
+Server Manager. Dit kan ook met de ServerManagerCmd opdracht.
+
+Zowel voor lidservers als voor domeincontrollers gelden groepsbeleidinstellingen
+die gedefinieerd zijn voor het domein, de OUs of de site. Lidserver behouden, in
+tegestelling tot domeincontrollers, een eigen lokale beveiligingsdatabank, de
+Security Account Manager (SAM).
+Doorgaans configureert men slechts een factie van de Windows Server toestellen
+als domeincontroller. Minimaal 1 per domein.
+
+\subsection{Indien gekozen wordt voor domeincontroller, moet ook de functie van
+globale catalogus ondersteund worden?}
+
+Indien er slechts een domein in het forest is, mogen alle domeincontrollers tot
+global catalog server worden gepromoveerd. Om het replicatieverkeer te beperken,
+zorgt me er best voor dat er steeds een global catalog server per site aanwezig
+si. De promotie gebeurt door de global catalog optie aant evinken in de general
+tabpagina van de properties van de NSDS settings van een domeincontroller. Dit
+is terug te vinden in de AD sites and services snap-in. De global catalog server
+heeft een kopie van alle objecten van de domeingegevens van het domein waarin de
+blobal catalog server zich bevindt, en een kopie van een subset van de
+eigenschappen van alle objecten van het gehele forest. Deze subset wordt enkel
+gerepliceerd tussen GC servers. Verder bevat de GC nog een kopie van de
+configuratiegegevens van alle domeinen in het forest, en het unieke schema van
+het forest. Eventueel worden ook nog specifieke applicatiepartities bijgehouden
+in de global catalog.
+
+\subsection{Welke domain controllers worden als RODC ingesteld?}
+
+Domeincontrollers configureren als Read Only Domain Controller is goede praktijk
+als de fysieke beveiliging van het toestel niet kan worden gegarandeerd, of waar
+specifieke interactieve toepassingen enkel op een DC kunnen worden uitgevoerd.
+Eeen bijkomend voordeel is dat het replicatieverkeer in een enkele richting
+wordt beperkt. Er kan ook nog configuratie van een filtered attribute set (welke
+kenmerken worden gerepliceerd, en welke niet) en een password replication policy
+worden geconfigureerd met credential caching voor specifieke gebruikers en
+computers. RODC's kunnen tevens de rol van GC en DNS server vervullen. In het
+geval van DNS gaat het over een ordinaire secundaire nameserver. Een RODC biedt
+ook ondersteuning voor de operations masters rollen. Er geldt wel de beperking
+dat een RODC enkel met Windows Server 2008 DC's gegevens kan repliceren.
+
+\subsection{Welke domeincontrollers vervullen de operations master rollen?}
+

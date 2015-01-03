@@ -3,31 +3,43 @@
 \section{Geef de diverse functionele niveaus waarop Active Directory kan
 ingesteld worden, en welke beperkingen er het gevolg van zijn.}
 
-Domein functioneel niveau
-\begin{itemize}
-	\item Niveau 0: Windows 2000 mixed
-	\item Niveau 1: Windows 2000 native
-	\item Niveau 2: Windows Server 2003
-	\item Niveau 3: Windows Server 2008
-	\item Niveau 4: Windows Server 2008 R2
-	\item Niveau 5: Windows Server 2012
-\end{itemize}
+Elk domein is gekenmerkt door een bepaald domein functioneel niveau. Dit domein
+functioneel niveau geeft aan welke minimum eis er gesteld wordt aan het
+besturingssysteem van de domeincontrollers, en bepaalt tegelijkertijd welke
+faciliteiten er beschikbaar zijn. Het wordt opgeslagen in twee kenmerken van het
+domeinobject: ntMixedDomain en msDS-Behavior-Version.
+\begin{description}
+	\item[Windows 2000 mixed] kan zowel NT4, Windows 2000 Server als Windows
+		server 2003 domeincontrollers bevatten, maar biedt de laagste AD
+		functionaliteit. NT5 domeinen worden standaard op dit niveau
+		gezet, omdat ze ervan uitgaan dat er nog NT4 domeincontrollers
+		aanwezig kunnen zijn.
+	\item[Windows 2000 native] biedt de keuze tussen willekeurige NT 5+
+		domeincontrollers.
+	\item[Windows Server 2003] er zijn enkel Windows Server 2003+
+		domeincontrollers mogelijk.
+	\item[Windows Server 2008] er zijn enkel Windows Server 2008+
+		domeincontrollers mogelijk.
+\end{description}
 
-Forest functioneel niveau
-\begin{itemize}
-	\item Niveau 0: Windows 2000
-	\item Niveau 2: Windows 2003
-	\item Niveau 3: Windows 2008
-	\item Niveau 4: Windows 2008 R2
-	\item Niveau 5: Windows 2012
-\end{itemize}
+Analoog aan het domain functioneel niveau, is er ook een forest functioneel
+niveau. Dit wordt opgeslagen in het msDS-Behavior-Version kenmerk van het
+partitions containerobject van de configuratie gegevens.
+\begin{description}
+	\item[Windows 2000] stelt geen enkele eis aan het functioneel niveau van
+		de liddomeinen en is de standaard instelling.
+	\item[Windows 2003] kan enkel domeinen bevatten die minimaal op Windows
+		Server 2003 domein functioneel niveau staan.
+	\item[Windows 2008] kan enkel domeinen bevatten met Windows Server 2008
+		domein functioneel niveau.
+\end{description}
 
 \section{Bespreek van elk niveau alle eraan gekoppelde voordelen. Geef hierbij
 telkens een korte bespreking van de ingevoerde begrippen.}
 
 Domein functioneel niveau
 \begin{description}
-	\item[Niveau 1: Windows 2000 native] 1 global catalog voor heel forest,
+	\item[Windows 2000 native] 1 global catalog voor heel forest,
 		Automatisch wederzijdse vertrouwensrelaties tussen alle domeinen
 		van een forest, Alle domeincontrollers kunnen zelfstandig een
 		aantal SPN-objecten aanmaken
@@ -52,22 +64,18 @@ Forest functioneel niveau
 \section{Hoe kan men detecteren op welk niveau een Active Directory omgeving
 zicht bevindt?}
 
-\begin{itemize}
-	\item Domein functioneel niveau
-	\item Wordt ingesteld op het domeinobject zelf
-	\item Wordt bepaald door twee attributen:
-		\begin{itemize}
-			\item ntMixedDomein
-			\item msDS-Behavior-Version
-		\end{itemize}
-\end{itemize}
+Het domein functioneel niveau wordt opgeslagen in twee kenmerken van het
+domeinobject: \begrip{ntMixedDomain} en \begrip{msDS-Behavior-Version}. Het
+ntMixedDomain kenmerk zal enkel bij Windows 2000 mixed domeinen op 1 staan, bij
+alle andere niveau's op 0. Het msDS-Behavior-Version kenmerk voor Windows 2000
+mixed en Windows 2000 native op 0, voor Windows Server 2003 op 2 en voor Windows
+Server 2008 op 3. Dit kan bv met dsquery opgevraagd worden.
 
-\begin{itemize}
-	\item Forest functioneel niveau
-	\item Wordt ingesteld op het partitions containerobject van de
-		configuratiegegevens
-	\item Wordt bepaald door slechts één attribuut: msDS-Behavior-Version
-\end{itemize}
+Het forest functioneel niveau wordt opgeslagen in een kenmerk van het partitions
+containerobject van de configuratiegegevens: \begrip{msDS-Behavior-Version}.
+Voor Windows 2000 forest functioneel niveau staat dit op 0, voor Windows Server
+2003 forest functioneel niveau op 2 en voor Windows Server 2008 forest
+functioneel niveau op 3.
 
 \section{Op welk diverse manieren kan men het functionele niveau verhogen of
 verlagen?}

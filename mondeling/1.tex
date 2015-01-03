@@ -11,7 +11,7 @@ identificeren.}
 		object.
 	\item[Distinguished Name (DN)] is opgebouwd uit de RDN van het object
 		zelf en de RDNs van alle containerobjecten waarvan het object in
-		de hiërarchische indeling deel van uitmaakt. Dit zorgt voor een
+		de hiÃ«rarchische indeling deel van uitmaakt. Dit zorgt voor een
 		unieke naamgeving voor elk object. Elk opeenvolgend deel van de
 		DN heeft de vorm \begrip{attribuut=waarde}, staat bekend als
 		\engels{attributed naming}. De delen worden gescheiden door een
@@ -20,7 +20,7 @@ identificeren.}
 		\begrip{cn=beelzebub,ou=iii,dc=hogent,dc=be}
 		De DN is belangrijk voor de werking van het LDAP protocol, bv
 		belangrijk bij het programmeren van scriptcode die AD
-		rechtstreeks aanspreekt. Een LDAP-cliënt kan query's op
+		rechtstreeks aanspreekt. Een LDAP-cliÃ«nt kan query's op
 		willekeurige objecten uitvoeren door een LDAP URL te gebruiken
 		met de vorm \begrip{LDAP://server DNS naam/object DN}. De DN
 		wordt opgeslagen in het kenmerk \begrip{distinguishedName} van
@@ -49,7 +49,7 @@ van toegang tot domeinbronnen. Ze zijn van toepassing op gebruikeraccounts,
 computeraccounts, groepen en domeinen. SIDs zijn uniek, ook in de tijd: nieuw
 aangemaakte accounts kunnen zo nooit de rechten krijgen van een oud account.
 
-SIDs worden meestal voorgesteld dooe een hiërarchische string getallen
+SIDs worden meestal voorgesteld dooe een hiÃ«rarchische string getallen
 gescheiden door koppeltekens. bv \begrip{S-1-5-x-y-z-500} S-1-5 is de standaard
 prefix, bestaande uit een \engels{Revision Level} en een \engels{Authority
 Identifier}. X, y en z zijn 32-bit getallen specifiek voor het domein
@@ -121,7 +121,7 @@ replicatiekarakteristieken erven.}
 De directory wordt enkel opgeslagen op domeincontrollers. Op elke
 domeincontroller wordt een kopie opgeslagen van de directory voor het domein
 waarin de controller zich bevindt. De informatie die in de directory is
-opgeslagen, is fysiek verdeeld in minimaal drie categorieën: \begrip{directory
+opgeslagen, is fysiek verdeeld in minimaal drie categorieÃ«n: \begrip{directory
 partities}
 \begin{description}
 	\item[Domaingegevens] bevatten de eigenlijke informatie over objecten in
@@ -145,7 +145,7 @@ partities}
 		Dit schema is uniek voor alle domeinen in het forest.
 	\item[Applicatiepartities] dit is een 4e vorm van partities die vanaf
 		Windows server 2003 kan aangemaakt worden. Een deel van de AD
-		gegevens kan in één of meerdere gescheiden applicatiepartities
+		gegevens kan in Ã©Ã©n of meerdere gescheiden applicatiepartities
 		worden ondergebracht, dit is interessant voor dynamische
 		objecten. Ze kunnen geen SPN objecten bevatten.  Objecten binnen
 		de applicatie partitie kunnen niet verplaatst worden buiten de
