@@ -7,8 +7,8 @@ identificeren.}
 	\item[Relative Distinguished Name (RDN)] zorgt voor de unieke
 		identificatie binnen de container waar het object zich in
 		bevindt. bv \begrip{cn=beelzebub} is RDN van computer beelzebub.
-		De RDN wordt opgeslagen in het kenmerk \begrip{cn} van het
-		object.
+		De RDN wordt (meestal) opgeslagen in het kenmerk \begrip{cn} van
+		het object.
 	\item[Distinguished Name (DN)] is opgebouwd uit de RDN van het object
 		zelf en de RDNs van alle containerobjecten waarvan het object in
 		de hiërarchische indeling deel van uitmaakt. Dit zorgt voor een
@@ -83,7 +83,7 @@ Voor de UPN suffix zijn er een aantal alternatieven:
 UPN is de meest geschikte aanmeldingsnaam maar wordt maar zelden gebruikt door
 compatibiliteit met vroegere NT versies. Meestal wordt als aanmeldingsnaam de
 NetBIOS naam van het domein en de SAM accountnaam van de gebruiker, gekoppeld
-met \, genomen. De NetBIOS naam bestaat uit max 15 karakters, standaard de meest
+met \\, genomen. De NetBIOS naam bestaat uit max 15 karakters, standaard de meest
 linkse component van de DNS naam. De SAM accountnaam bestaat uit max 20
 karakters, standaard de eerste 20 bytes van de RDN. NetBIOS naam moet uniek zijn
 in het forest, SAM accountnaam uniek in het domein en wordt opgeslagen in het
@@ -108,11 +108,29 @@ eventueel SRV records die naar het toestel verwijzen.
 \section{Enkele veel gebruikte klassen vertonen nog meer identificerende
 attributen voor hun instanties. Bespreek deze klassen en attributen}
 
-\begin{itemize}
-	\item Common name (cn)
-	\item IDAPDisplayName
-	\item Object identifier (OID)
-\end{itemize}
+De klassen attributeSchema en classSchema zin twee veelgebruikte klassen waarvan
+de objecten terug te vinden zijn in de schema partitie. Deze objecten
+beschrijven alle objecten in de AD: classSchema objecten beschrijven de klassen
+waarvan objecten kunnen aangemaakt worden. De attributen die een klasse kan
+bevatten worden apart beschreven door attributeSchema objecten, zo kunnen
+meerdere klassen dezelfde kenmerk-definitie gebruiken.
+
+De objecten van deze klassen hebben een viervoudige naamgeving:
+\begin{description}
+	\item[Common name] is niets anders dan de RDN van het object in de
+		schema container.
+	\item[GUID] van het kenmerk kan automatisch gegenereerd worden bij
+		creatie van een nieuw kenmerk of kan op voorhand met guidgen
+		worden gegeneerd zodat dezelfde kenmerken in verschillende
+		forest dezelfde GUID kunnen krijgen.
+	\item[LDAP display name] wordt gebruikt voor programmatische toegang.
+	\item[Object identifier (OID)] dient voor interne representatie. Dit
+		zijn X.500 Object IDs die worden verleend door speciale
+		autoriteiten zoals ISO, en zijn gegarandeerd uniek in alle
+		netwerken over de hele wereld. Een bedrijk kan een eigen unieke
+		subtak toegewezen krijgen of kan gebruik maken van een unieke
+		subtak in een Microsoft subtak.
+\end{description}
 
 \section{In welke partities is de Active Directory informatie verdeeld? Geef de
 betekenis van elke partitie, hun onderlinge relatie, en de

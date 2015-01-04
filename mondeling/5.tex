@@ -105,33 +105,70 @@ vertrouwensrelaties en hun toestand.
 domeinstructuren? Bespreek de alternatieve mogelijkheden bij de conversie van
 een NT 4.0 domeinstructuur naar een Windows Server omgeving.}
 
-In de praktijk maakt men in een NT 4 domeinstructuur een onderscheid tussen
-master (of account) domeinen en resource domeinen. Het verschil tussen deze
-domeintypes is niet in NT 4 zelf ingebouwd, maar eerder gebaseerd op het gebruik
-in de praktijk. Een master domein bevat over het algemeen gebruikersaccounts en
-groepen, terwijl de servers in een resource domein bronnen aanbieden. Hierbij
-zijn er doorgaans tweerichtingsvertrouwensrelaties tussen alle master domeinen
-onderling, en enkelvoudige vertrouwensrelaties waarbij elk resource domein elk
-master domein vertrouwt.
-De upgrade van NT 4 domeinstructuur naar AD begint bovenaan in de
-domeinhiërarchie en gaat het proces dan naar beneden: het master NT 4 domein is
-het eerste domein waarop een upgrade meot uitgevoerd worden, gevold door een
-upgrade van de resource domeinen. Je kan de organisatiestructuur van de
-bestaande meerdere domeinen simuleren door corresponderende OUs in het Windows
-Server domein te maken.
+Een eerste verschil tussen NT4 en Windows Server is het conceptueel onderscheid
+tussen master domeinen en resource domeinen. Een master domein bevat gebruikers
+en groepen, terwijl een resource domein lidservers bevat die diensten aanbieden
+aan de gebruikers, en zelf nauwelijks gebruikers bevat. De NT4 domeinstructuren
+bestaan meestal uit één (of meerdere) master domeinen, en meerdere resource
+domeinen. Er worden bidirectionele vertrouwensrelaties aangemaakt tussen alle
+masterdomeinen onderling, en unidirectionele vertrouwensrelaties waarbij elk
+resourcedomein elk masterdomein vertrouwt.
 
-Wanneer je een aantal NT 4 domeinen wil samenvoegen tot één groot Windows Server
-domein, dan zou het eenvoudiger zijn om de oude domeinen eerst samen te voegen,
-het samengevoegde domein te upgraden naar Windows Server, en vervolgens de
-oorspronkelijke domein om te zetten in OUs. Hier bestaan helaas geen
-hulpprogrammas voor.
+De omschakeling van NT4 naar Windows Server moet geleidelijk en gefaseerd
+gebeuren. Het aantal domeinen moet hierbij dalen. De organizational units (OUs)
+van AD vervangen het conceptuele onderscheid tussen resource- en masterdomeinen.
+De upgrade begint steeds bovenaan in de domeinhiërarchie: het masterdomein
+krijgt als eerste een upgrade, daarna volgen de resource domeinen.
 
-\begin{itemize}
-	\item WServer zal automatisch een bi-directionele vertrouwensrelatie
-		leggen tussen een domein en zijn kinddomeinen. In NT 4.0 moet
-		dit manueel gebeuren
-	\item WServer vertrouwensrelaties zijn transitief, in NT 4.0 is dit niet
-		zo
-	\item WServer maakt automatisch vertrouwensrelaties aan tussen de
-		verschillende trees van eenzelfde forest
-\end{itemize}
+Bestaande domeinen kunnen worden gesimuleerd door OUs in het Windows Server
+Domein. We bekomen zo een getrouwe weerspiegeling van de oude structuur.
+Eventueel kunnen aanvullende structuren worden toegevoegd om een meer
+gedetaileerde ordening te verkrijgen. Op deze manier wordt het aantal domeinen
+en trusts gereduceerd.
+
+Indien er bepaalde bedrijfseenheden als afzonderlijke organisaties moeten worden
+behandeld, is een forest met afzonderlijke trees een goede oplossing. De
+gebruikersaccounts worden dan verplaatst naar de domeinen met de bronnen die ze
+gebruiken, in plaats van het centrale root domein.
+
+Indien de oude structuur meerdere NT4 master domeinen bevat, zijn er hiervoor
+een aantal mogelijke oorzaken. In eerste instantie kan het zijn dat een enkel
+master domein te veel gebruikers en groepen zou bevatten. Deze veroorzaken
+immers instabiliteit van de SAM databank. Dit probleem is meteen opgelost door
+AD, omdat het veel schaalbaarder is. Een andere mogelijk oorzaak is de
+geografische situering. Het is mogelijk dat de verschillende geografische
+locaties verbonden zijn door links met kleine bandbreedte. Dit probleem kan
+worden opgevangen door AD sites te configureren. Het replicatie verkeer kan nog
+verder worden beperkt door gebruik te maken van RODC's. Een derede mogelijkheid
+is de noodzaak aan een versschillende wachwoordbeleid voor bepaalde
+gebruikersgroepen. Dit kan worden opgevangen door het domein functioneel niveau
+te verheffen naar Windows Server 2008, en een fine grained password policy in te
+stellen. Als laatste oorzaak voor verschillende NT4 master domeinen kan het zijn
+dat bepaalde onderdelen van de organizatie controle moeten kunnen uitoefenen
+over eigen bronnen en gebruikers. Dit is bij de invoering van AD de enige reden
+om aparte domeinen te behouden in de verschillende sites. De migratie gebeurt op
+een vand de volgende manieren:
+\begin{enumerate}
+	\item Elk NT4 domein wordt geupgraded naar de root van een Windows
+		Server tree in hetzelfde forest. Alle gemachtigde gebruikers
+		krijgen hierdoor potentiële toegang tot alle bronnen in alle
+		domeinen van het forest. Het forest kan een gemeenschappelijk
+		schema, gemeeschppelijke configuratiegegevens en een
+		gemeenschappelijke global catalog delen.
+	\item Als alternatief kan elk NT4 domein woren geupgraded naar een
+		subdomein van een artificieel root domein van dezelfde tree. Dit
+		root domein heet een structural of placeholder domein omdat het
+		resources noch accounts bevat. Het is echter wel een uistekende
+		plaats om de global catalog onder te brengen.
+\end{enumerate}
+
+Als laatste mogelijkheid voor migratie kan er besloten worden om alle NT4
+domeinen samen te voegen tot één groot Windows Server domein. Dit kan op twee
+manieren. In de eerste manier worden alle domeinen eerst samgevoegd, en
+vervolgens geupgraded naar Windows Server. De oorspronkelijke domeinen worden
+dan omgezet in OUs. Er zijn hiervoor geen hulpmiddelen. De migratie gebeurt
+volledig manueel met behulp van commando lijn opdrachten. Als alternatief worden
+de afzonderlijkde domeinen eerst geupgraded naar Windows Server. Vervolgens
+wordt in elk van de masterdomeinen voor de resourcedomeinen een OU aangemaakt.
+De machines in de resourcedomeinen worden dan verplaatst naar de OUs in de
+masterdomeinen.

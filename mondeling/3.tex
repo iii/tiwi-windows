@@ -70,7 +70,7 @@ kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
 
 \subsection{Inhoudsregels}
 
-\begin{enumerate}
+\begin{itemize}
 	\item De mustContain en systemMustContain kenmerken bevatten de lijst
 		met kenmerken die verplicht zijn in elk exemplaar van de klasse.
 		Een kenmerk is verplicht van zodra het verplicht is in één van
@@ -91,10 +91,10 @@ kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
 		worden. Zo kunnen er geen nieuwe exemplaren van de klasse
 		aangemaakt worden. AD ondersteunt geen verwijdering van
 		schemaobjecten.
-\end{enumerate}
+\end{itemize}
 
 \subsection{Structuurregels}
-\begin{enumerate}
+\begin{itemize}
 	\item Het objectClassCategory kenmerk heeft een integer waardie die de
 		categorie van de klasse bepaalt: structurele klasse (1),
 		abstracte klasse (0 of 2) of hulpklasse (3). Abstracte klassen
@@ -117,30 +117,47 @@ kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
 		voor zijn objecten bijgevolg niet van welke klasse het objecten
 		kan bevatten als containerobject, maar wel van welke klasse de
 		objecten als container kunnen optreden.
-\end{enumerate}
+\end{itemize}
 
 \section{Welke andere types objecten bevat het Active Directory schema, en wat
 is hun bedoeling?}
 
 \begin{description}
-	\item[attributeSchema objecten]
-	\item[abstracte schema]
+	\item[attributeSchema objecten] zijn objecten waarmee een kenmerk wordt
+		ingesteld en waarmee beperkingen opgelegd worden aan objecten
+		die een exemplaar zijn van de klasse met dit kenmerk. Elk
+		kenmerk moet zo maar eenmaal gedefinieerd worden, maar kan toch
+		in meerdere klassen gebruikt worden.
+	\item[Abstracte schema] Naast classSchema en attributeSchema
+		objecten bevat het schema nog één ander object: een subSchema
+		object, het abstracte schema genoemd. Het heeft als RDN
+		Aggregate en bevat een alternatieve, compacte voorstelling van
+		het gehele schema. De bedoeling is om vereenvoudigde schema
+		gegevens ter beschikking te stellen aan LDAP cliënts, zonder
+		zich over veel implementatie details hoeven te bekommeren.
+		Gecombineerd met de Active Directory Service Interfaces (ADSI)
+		biedt het abstracte schema een toegang naar het schema, die veel
+		meer high-level is dan via het reële schema.
 \end{description}
 
 \section{Hoe en met welke middelen kan het Active Directory schema uitgebreid
 worden?}
 
-\begin{enumerate}
-	\item active Directory Schema snap-in
-	\item ldifde
-	\item Programma's via LDAP of ADSI interface
-\end{enumerate}
+Uitbereidingen en wijzigingen van het schema zijn risicovol, geldne voor het
+hele forest en kunnen potentieel de hele infrastructuur onbruikbaar maken.
+Schema objecten worden daarom ook beveiligd met ACL's. Aanmaken van geheel
+nieuwe structurele klassen en wijzigen van attributen van bestaande klassen
+moeten zoveel mogelijk vermeden worden.
 
-\subsection{hoe wijzigingen aanbrengen}
+Kleinschalige wijzigingen kunnen gebeuren met de Active Directory Schema
+snap-in. Een veilge manier om attributen aan een klasse toe te voegen: maak
+eerst de nodige attributeSchame objecten aan. Vervolgens wordt een nieuwe
+hulpklasse aangemaakt, waarin de lijst van optionele attributen wordt aangevuld
+met de nieuw aangemaakte attributen. Tenslotte wordt de nieuw aangemaakte
+hulpklasse geassocieerd met de klasse waaraan we de attributen wouden toevoegen.
 
-\begin{itemize}
-	\item foutieve wijzigingen kunnen het volledige domein onbruikbaar maken
-	\item schemauitbreiding geldt voor het gehele forest
-	\item enkel gemachtigde gebruikers kunnen deze wijzigingen doorvoeren
-	\item bieden wel veel potentieel dus moeten niet compleet worden genegeerd
-\end{itemize}
+Grootschalige uitbereidingen gebeuren best met ldifde of programmatisch met ADSI
+interfaces. Met ldifde kunnen bestanden die geformatteerd zijn in LDAP Data
+Interchange Format worden toegepast op de directory. Om het schema aan te
+passen, stellen we alle nodige acties voor in het LDIF formaat. Het bestand
+wordt dan meegegeven aan ldifde -i -f.

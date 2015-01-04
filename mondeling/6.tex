@@ -18,14 +18,14 @@ vragen telkens (voor zover relevant):
 		functie kan instellen, wijzigen en/of ongedaan maken?
 \end{itemize}
 
-\subsection{Wordt server al dan niet opgenomen in een domein?}
+\section{Wordt server al dan niet opgenomen in een domein?}
 
 Als een Windows Server toestel lid is van een werkgroep, niet van een domein,
 dan wordt het een zelfstandige server genoemd. Deze profiteren niet van de
 voordelen die AD biedt. Vooral indien er reeds een AD domeinstructuur aanwezig
 is, is de keuze snel gemaakt.
 
-\subsection{Vervult de in een domein opgenomen server al dan niet de functie van
+\section{Vervult de in een domein opgenomen server al dan niet de functie van
 domeincontroller?}
 
 Een in een domein opgenomen server die de functie van domeincontroller niet
@@ -52,7 +52,7 @@ Security Account Manager (SAM).
 Doorgaans configureert men slechts een factie van de Windows Server toestellen
 als domeincontroller. Minimaal 1 per domein.
 
-\subsection{Indien gekozen wordt voor domeincontroller, moet ook de functie van
+\section{Indien gekozen wordt voor domeincontroller, moet ook de functie van
 globale catalogus ondersteund worden?}
 
 Indien er slechts een domein in het forest is, mogen alle domeincontrollers tot
@@ -69,7 +69,7 @@ configuratiegegevens van alle domeinen in het forest, en het unieke schema van
 het forest. Eventueel worden ook nog specifieke applicatiepartities bijgehouden
 in de global catalog.
 
-\subsection{Welke domain controllers worden als RODC ingesteld?}
+\section{Welke domain controllers worden als RODC ingesteld?}
 
 Domeincontrollers configureren als Read Only Domain Controller is goede praktijk
 als de fysieke beveiliging van het toestel niet kan worden gegarandeerd, of waar
@@ -83,5 +83,17 @@ geval van DNS gaat het over een ordinaire secundaire nameserver. Een RODC biedt
 ook ondersteuning voor de operations masters rollen. Er geldt wel de beperking
 dat een RODC enkel met Windows Server 2008 DC's gegevens kan repliceren.
 
-\subsection{Welke domeincontrollers vervullen de operations master rollen?}
+\section{Welke domeincontrollers vervullen de operations master rollen?}
 
+\subsection{Rollen uniek in elk domein}
+\begin{itemize}
+	\item RID master
+	\item PDC emulator
+	\item infrastructure master
+\end{itemize}
+
+\subsection{Rollen uniek in het forest}
+\begin{itemize}
+	\item schema master
+	\item domain naming master
+\end{itemize}
