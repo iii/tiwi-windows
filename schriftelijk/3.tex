@@ -4,12 +4,158 @@
 configuratieinstellignen aan? Bespreek het doel van deze diverse instellingen en
 de belangrijkste eigenschappen en mogelijkheden ervan.}
 
+Om gedeelde mappen aan te kunnen maken, moet je over de juiste machtigingen
+beschikken. Er zijn in Windows Server 2008+ diverse manieren om shares te maken:
+\begin{itemize}
+	\item In Explorer
+	\item Shared folders snap-in
+	\item Server Manager
+	\item Command Prompt
+\end{itemize}
+
+De Server Manager biedt de meeste configuratie instellingen.
+
+Je kan een nieuwe share maken door in Server Manager de Roles\\File
+Services\\Share and Storage Management map te selecteren en vervolgens de
+Provision Share taak uit te voeren. In de opeenvolgende dialogen kunnen volgende
+zaken geconfigureerd worden:
+\begin{itemize}
+	\item Shared Folder Location is het pad tot de map die je wil delen
+	\item NTFS Permissions
+	\item SMB Permissions
+	\item SMB Settings
+	\item Quota Policy
+	\item Filescreen Policy
+	\item DFS Namespace publishing
+\end{itemize}
+
+\subsection{NTFS Permissions}
+
+Na machtigingen op shares zijn NTFS machtigingen de tweede (beveiliging van
+mappen) en derde (beveiliging van bestanden) verdedigingsmuren voor het
+beveiligen van gegevens en netwerkbronnen. Er bestaan twee niveaus van NTFS
+machtigingen:
+\begin{itemize}
+	\item Het laagste niveau bestaat uit 13 atomaire of speciale
+		machtigingen, die de bouwstenen vormen voro het hogere niveau.
+		Dit zijn de kleinst mogelijke machtigingen die je kan instellen.
+		Bieden de mogelijkheid om zeer nauwkeuring het toegangsniveau te
+		bepalen.
+	\item Het hoogste niveau, moleculaire of standaard machtigingen, omvat 6
+		veel gebruikte combinaties van atomaire machtigingen.
+\end{itemize}
+
+\subsection{SMB Permissions}
+
+Share/SMB machtigingen vormen een eerste beveiligingslaag. Hebben overhand op
+NTFS als ze meer beperkend zijn. Op share niveau kun je drie machtigingen
+definiëren:
+\begin{itemize}
+	\item Full Control
+	\item Read: bekijken en toepassingen uitvoeren
+	\item Change: wijzigen, verwijderen. De eigenlijke share en NTFS
+		machtigingen kunnen niet aangepast worden.
+\end{itemize}
+
+\subsection{SMB Setting}
+
+\begin{description}
+	\item[User limit] maximum aantal users die de share gezamelijk kunnen
+		benutten
+	\item[Acces based Enumeration] bestanden en submappen waar je geen
+		enkele NTFS machtiging op hebt niet weergeven.
+	\item[Client side caching] cachen van veel gebruikte netwerkbestanden.
+\end{description}
+
+\subsection{Quota policy}
+
+Mogelijkheid om de hoeveelheid beschikbare ruimte voor gebruikers in te stellen.
+\begin{description}
+	\item[Volumequota] Gebaseerd op bestandseigendom en dus onmogelijk om
+		per gebruikersgroep de som te laten controleren.
+	\item[Mapquota] Vanaf Windows Server 2008 kan men wel mapquota op mappen
+		plaatsen, maar dit geldt voor alle gebruikers. Werkt met soft en
+		hard treshold.
+\end{description}
+
+\subsection{Filescreen Policy}
+
+Mogelijkheid tot verhindern van opslaan van bestanden met een bepaalde extensie.
+Er kunnen reacties getriggerd worden als iemand dit toch probeert.
+
+\subsection{DFS Namespace publishing}
+
+Distributed File System namespace is equivalent en fungeert zoals een share, met
+het verschil dat een DFS naespace kan bestaan uit DFS mappen (die verwijst naar
+een share, niet noodzakelijk op dezelfde server of zelf een DFS namespace),
+bestanden en gewone mappen. Dit geeft de mogelijkheid om transparant aan
+gebruikers bronnen van meerdere servers op 1 locatie aan te bieden. De DFS
+topologie wordt automatisch in AD gepubliceerd en is dus altijd zichtbaar voor
+gebruikers op alle servers in het domein.
+
+DFS folder targets geven de mogelijkheid om identieke shares samen te nemen tot
+1 DFS map. Een client zal dan bij het connecteren tot een DFS namespace elke
+folder target uitproberen tot een werkende gevonden wordt. Dit geeft een hogere
+fouttolerantie en een spreiding van de belasting. Synchronisatie van deze
+verschillende shares gaat met FRS of DFS-R.
+
 \section{Waar wordt de definitie en (partiële) configuratie van gedeelde mappen
 opgeslagen? Hoe kan men deze wijzigen vanuit de command prompt?}
 
+De configuratie wordt opgeslagen in het register van de server. Per share 1
+multi-valued sleutel in de Shares subtak van de LanManServer service.
+
+\begin{description}
+	\item[net file] Bekijk en beheer bronnen die gedeeld worden over het
+		netwerk. De server service moet draaien om dit commando te
+		kunnen gebruiken.
+	\item[net config] Bekijk het maximum aantal gebruikers die een gedeelde
+		bron kunnen raadplegen en de maximum aantal open files per
+		sessie.
+	\item[net use] Verbind of verbreek de verbinding met een computer van
+		een gedeelde bron.
+	\item[net session] Beheer server connecties.
+	\item[net share] Maak, verwijder, beheer en toon gedeelde bronnen.
+	\item[net view] Toon informatie over de domeinen, computers en bronnen
+		die gedeeld zijn door de aangegeven computer, inclusief de
+		offline client cache setting.
+	\item[net help] Bekijk de hulp pagina voor de netwerk commando's.
+
+\end{description}
+
 \section{Op welke diverse manieren kan men gebruik maken van gedeelde mappen?}
+
+Eenvoudigste manier: rechtstreeks pad ingeven ind e adresbalk van een Explorer.
+Als je een bepaalde netwerklocatie frequent gebruikt, is het aangewezen om deze
+locatie in het lokale filesysteem te mappen. De share krijgt dan een
+stationsletter toegewezen, en kan net als een lokaal station gebruikt worden.
+Dit is in te stellen door in exploere rechtermuisknop op Network of My network
+places -> Map Netwrok Drive -> wizard. Kan ook met het command net use.
 
 \section{Geef een overzicht van de belangrijkste voordelen van de opeenvolgende
 versies van het NTFS-bestandssysteem. Bespreek elk van deze aspecten (ondermeer
 het doel, de voordelen en de beperkingen ervan), en geef aan hoe je er gebruik
 kan van maken, bij voorkeur vanuit een Command Prompt.}
+
+\subsection{Features vanaf v1.2}
+
+\begin{itemize}
+	\item Beveiliging op bestandsniveau
+	\item Logging van schijfactiviteiten
+	\item Dynamisch uitbreiden van partities/volumes
+	\item Compressie
+	\item Grotere partities, zonder performantiedegradatie
+	\item Hardlinks
+	\item Auditing op objecttoegang
+\end{itemize}
+
+\subsection{Features vanaf v3.0}
+
+\begin{itemize}
+	\item Reparsepunten en bestandssysteemfilters
+	\item Transparante encryptie en decodering
+	\item Individuele diskquota op volumeniveau
+	\item Volumekoppelpunten: mounten van volumes in NTFS mappen
+	\item Sparse bestanden
+	\item Junction points naar mappen (soft link)
+\end{itemize}
