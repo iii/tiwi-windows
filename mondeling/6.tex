@@ -84,15 +84,58 @@ dat een RODC enkel met Windows Server 2008 DC's gegevens kan repliceren.
 
 \section{Welke domeincontrollers vervullen de operations master rollen?}
 
+Een aantal specifieke AD functies kunnen slechts door één enkele controller in
+het domein of in het forest vervuld worden.
+
 \subsection{Rollen uniek in elk domein}
-\begin{itemize}
-	\item RID master
-	\item PDC emulator
-	\item infrastructure master
-\end{itemize}
+\begin{description}
+	\item[RID master] In domeinen met minimaal Windows 2000 native
+		functioneel niveau wijst de RID master reeksen relatieve IDs
+		toe aan alle domeincontrollers in het domein. Hiermee kunnen de
+		domeincontrollers zelfstandig SPN objecten met een SID
+		aanmaaken. Wanneer een domeincontroller 80\% van zijn RID pool
+		heeft opgebruikt, vraagt hij een nieuwe reeks aan bij de RID
+		master.
+		Een object tussen domeinen verplaatsen moet gebeuren vanop de
+		RID master van het domein dat het object bevat.
+	\item[PDC emulator master] In een Windows 2000 mixed domein met NT4
+		back-up domeincontrollers fungeert de PDC emulator master als
+		een volledige emulatie van een NT4 primaire domeincontroller.
+		NT4 domeinen kunnen hierdoor services blijven verlenen zonder te
+		weten dat hun PDC in feite door AD vervangen is. De PDC emulator
+		master verwerkt wachtwoordwijzigingen van cliënts en repliceert
+		bijgewerkte gegevens naar de NT4 back-up domeincontrollers. Hij
+		krijgt ook een voorkeursbehandeling bij de replicatie van
+		wachtwoordwijzigingen, uitgevoerd door andere domeincontrollers
+		in het domein.
+		De PDC emulator master fungeert ook als primaire bron van
+		tijdssynchronisatie. Best RID master en PDC emulator master
+		laten vervullen door dezelfde domeincontroller. Het verlies van
+		de PDC emulator heeft gevolgen voor netwerkgebruikers.
+	\item[infrastructure master] is verantwoordelijk voor het bijwerken van
+		verwijzingen vanuit objecten in het eigen domein naar objecten
+		in andere domeinen. De infrastructure master van een domein
+		vergelijkt continu de kenmerken van zijn phantom objecten met de
+		kenmerken van de corresponderende objecten in externe domeinen,
+		en de kenmerken van phantom objecten in externe domeinen die
+		dooverwijzen naar eigen objecten met de kenmerken van deze
+		objecten. Hij doet hiervoor een beroep op de global catalog.
+		Omdat domeincontrollers die global catalog zijn geen phantom
+		objecten aanmaken, doordat ze reeds beschikken over een kopie
+		van de objecten van andere domeinen, moet de rol van
+		infrastructure master vervuld worden door een domeincontroller
+		die geen global catalog is.
+\end{description}
 
 \subsection{Rollen uniek in het forest}
-\begin{itemize}
-	\item schema master
-	\item domain naming master
-\end{itemize}
+\begin{description}
+	\item[schema master] beheert alle gewijzigde gegevens voor het schema.
+		Als je het schema van een forest wil bijwerken, dan moet je dit
+		doen via de schema master. Dit om conflicterende wijzigingen in
+		het schema te vermijden.
+	\item[domain naming master] beheert het toevoegen en verwijderen van
+		domeinen en applicatiepartities in het forest. Het is de enige
+		domeincontroller die de partitions container van de configuratie
+		gegevens kan wijzigen. Het moet een global catalog controller
+		zijn.
+\end{description}
