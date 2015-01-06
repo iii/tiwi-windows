@@ -4,10 +4,116 @@
 standpunt van gebruikers, als uit het standpunt van beheerders, en bespreek
 hierbij de voor- en nadelen.}
 
+Op NT4+ computers worden de desktop instellingen voor de werkomgevingen van
+gebruikers op de lokale computer automatisch gedefinieerd en bijgehouden met
+behulp van gebruikersprofielen. Dit is in feite een momentopname van de desktop
+omgeving van een gebruiker. Het definieert een aangepaste desktop omgeving met
+individuele weergave instellingen, netwerkverbindingen, printerverbindingen en
+andere spcifieke instellingen. Gebruikersprofielen bieden diverse voordelen:
+\begin{itemize}
+	\item Elke gebruiker beschikt over persoonlijke desktop instellingen bij
+		het aanmelden.
+	\item Bij aanmelden worden automatisch de desktop instellingen hersteld
+		die actief waren bij afmelding.
+	\item Ze kunnen ook centraal op een server worden opgeslagen. We spreken
+		dan van roaming gebruikersprofielen.
+\end{itemize}
+
+Gebruikersprofielen zijn afkomstig uit het NT4 tijdperk en niet strikt
+noodzakelijk in NT5+ omgevingen. Group Policies kunnen namelijk de instellingen
+van het gebruikersprofiel te niet doen. Maar het blijft wel de eenvoudigste
+manier om gebruikersinterfaces te configureren.
+
+Met gebruikersprofielen is het voor beheerders mogelijk om voor elke gebruiker
+een individuele desktop te configureren. Ook kan er één algemeen
+gebruikersprofiel aangemaakt worden, dat verplicht door alle gebruikers moet
+gebruikt worden. Gebruikers kunnen terwijl ze aangemeld zijn hier wel
+wijzigingen aan doen, maar deze zullen niet opgeslagen worden en bij de volgende
+aanmelding zal terug het standaard profiel verschijnen.
+
 \section{Geef de verschillende types gebruikersprofielen. Hoe worden deze
 ingesteld, en waar worden deze bij voorkeur opgeslagen?}
 
+Er zijn 3 belangrijke soorten gebruikersprofielen:
+\begin{description}
+	\item[Lokale gebruikersprofielen] Deze worden automatisch aangemaakt als
+		een gebruiker zich voor de eerte keer aanmeld op een computer.
+		Het wordt op de lokale harde schijf opgeslagen. Alle wijzigingen
+		in dit profiel zijn specifiek voor de gebruiker.
+	\item[Roaming gebruikersprofielen] Dit zijn gebruikersprofielen die op
+		een netwerk share worden opgeslagen. Een gebruiker kan op gelijk
+		welke computer in het netwerk inloggen en zijn eigen
+		gebruikersprofiel zal gedownload worden van de share en getoond
+		worden. Het instellen van een roaming profiel kan door het
+		profilePath attribuut van een gebruikersobject in te vullen.
+		Hier wordt een netwerk pad opgegeven in de vorm: \textbackslash
+		\textbackslash servernaam\textbackslash sharenaam\textbackslash
+		mapnaam. De mapnaam bevat waarschijnlijk een component van de
+		vorm \%username\%.
+		Bij het afmelden wordt een kopie van het al dan niet gewijzigde
+		gebruikersprofiel opgeslagen, zowel lokaal als in de netwerkmap.
+		Bij terug aanmelden wordt de timestamp van het lokale en roaming
+		profiel vergeleken, waarmee kan bepaalt worden of het profiel
+		moet gekopieerd worden naar de lokale computer.
+		Roaming profielen bieden samengevat drie grote voordelen:
+		mobiliteit, fouttolerantie en centrale beheerbaarheid. De
+		nadelen zijn een verhoogd netwerkverkeer, langere aanlog- en
+		uitlogtijden en een verhoogd veiligheidsrisico. NT5 en NT6+
+		roaming profielen zijn helaas onderling niet uitwisselbaar. Men
+		noemt ze respectievelijk v1 en v2 profielen.
+	\item[Mandatory gebruikersprofielen] Deze worden gedefinieerd door een
+		systeembeheerder en zijn verplicht te gebruiken voor alle
+		gebruikers. Wijzigingen die de gebruikers aanbrengen worden niet
+		opgeslagen. In tegenstelling tot roaming profielen, kunnen
+		mandatory profielen gedeeld worden door diverse gebruikers. Ze
+		worden bij voorkeur opgeslagen in de SYSVOL share van
+		domeincontrollers. Mandatory profielen bieden systeembeheerders
+		de meeste controle, maar eisen anderzijds ook het meeste setup
+		werk.
+\end{description}
+
 \section{Geef de verschillende componenten van gebruikersprofielen.}
+
+Een gebruikersprofielmap bevat twee belangrijke componenten:
+\begin{itemize}
+	\item Het Hive bestand NTuser.dat vormt het register gedeelte van het
+		gebruikersprofiel. Dit omvat ondermeer alle door de gebruiker
+		gedefinieerde instellingen voor de Windows omgeving en
+		toepassingsprogramma's. NTuser.dat.log is een log bestand van
+		handelingen dat er is om NTuser.dat te beschermen als er
+		veranderingen worden weggeschreven naar schijf.
+	\item Bestanden en snelkoppelingen naar verschillende desktop items,
+		zoals naar toepassingsspecifieke gegevens, locatie op het
+		internet, en de laatst gebruikte documenten. Bestanden en
+		snelkoppelingen worden gestructureerd in diverse mappen. Om de
+		grootte van het gebruikersprofiel te beperken, worden er bij
+		voorkeur enkel snelkoppelingen in het profiel opgenomen, en
+		wordt een deel van het profiel, appdate en local settings, enkel
+		lokaal bewaard.
+		Op NT6+ worden de snelkoppelingen uit het persoonlijk v2 profiel
+		dynamisch aangevuld met de items in de overeenkomstige submappen
+		van het lokale public profiel.
+\end{itemize}
 
 \section{Over welke alternatieve hulpmiddelen beschikt een beheerder om
 gebruikersprofielen te configureren?}
+
+Een systeembeheerder kan, door de Default user, Default user.V2, Default, All
+users en Public profielen te manipuleren, standaardinstellingen definiëren die
+opgenoemen worden in alle individuele gebruikerprofielen. Deze profielen in de
+NETLOGON share vormen een uitstekende combinatie met roaming profielen.
+
+Een andere optie is dat de beheerder voorgedefinieerde gebruikersprofielen
+maakt. Hiervoor log je in met een willekeurig gebruikersaccount en maak je als
+gebruiker het gewenste gebruikersprofiel. Daarna kopieer je als administrator
+het gebruikersprofiel naar de gewenste netwerk share. Aangezien de NTuser.dat
+component intern ACLs bevat op registersleutels, kan een op bestandbasis
+gekopieerd gebruikersprofiel enkel gebruikt wroden door de gebruiker die het
+profiel heeft gecreëerd. Om dit te verhelpen zijn er twee opties:
+\begin{itemize}
+	\item Wijzig met de register editor de ACLs op de registersleutels in
+		NTusers.dat.
+	\item Gebruik een specifiek met Windows Server meegeleverd
+		hulpprogramma. Hiermee kan opgeven wie het profiel mag gebruiken
+		in het Permitted to use veld.
+\end{itemize}
