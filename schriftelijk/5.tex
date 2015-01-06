@@ -12,9 +12,99 @@ Bespreek ondermeer:
 		soorten groepen? Stel deze relaties eveneens schematisch voor.
 \end{itemize}
 
+Er zijn drie soorten veiligheidsgroepen, bereiken of scopes genoemd: lokaal,
+globaal en universeel. Zowel het type als de scope van een groep worden
+bijgehouden in de individuele bits van het groepType attribuut van het groep
+object. Het bereik van een groep bepaalt zowel of een groep leden uit andere
+domeinen en forests kan hebben, als de domeinen waarin rechten en machtigingen
+aan de groep kunnen toegewezen worden.
+
+\subsection{Lokale veiligheidsgroepen}
+
+Lokale groepen kunnen leden uit elk domein van het forest of andere trusted
+domeinen bevatten. Lokale groepen zijn enkel zichtbaar en geldig in het eigen
+domein. Lokale groepen worden niet gekopieerd naar de global catalog. Ze zijn
+niet enkel zichtbaar voor domeincontrollers maar ook op alle werkposten en
+lidservers van het domein.
+
+Lokale groepen worden typisch gebruikt om rechten en machtigingen toe te kennen,
+en bevatten eerder andere groepen dan gebruikers.
+
+\subsection{Globale veiligheisgroepen}
+
+Globale groepen kunnen alleen gebruikers en andere globale groepen uit hetzelfde
+domein omvatten. Ze zijn zichtbaar in elk domein van het forest of andere
+trusting domeinen. Globale groepen kunnen ook toegelaten worden tot de lokale
+groepen van werkposten en lidservers. De naam van de groep wordt gekopieerd naar
+de global catalog, maar niet de leden ervan.
+
+Ze worden vooral gebruikt als container voor gebruikers die dezelfde
+machtigingen of rechten nodig zullen hebben.
+
+\subsection{Universele beiligheidsgroepen}
+
+Universele groepen zijn niet voor Windows Server en zijn enkel te gebruiken in
+domeinen met minstens Windows 2000 native functioneel niveau. Ze kunnen leden
+uit elk domein van het forest (niet van andere trusting domeinen) bevatten en
+zijn zichtbaar in elk domein van het forest (niet in andere trusting domeinen).
+
+Universele groepen worden net als lokale groepen typisch gebrukt om rechten en
+machtigingen toe te kennen, maar bieden het voordeel dat ze in alle domeinen
+tegelijkertijd geldig zijn. Belastend voor de global catalog. Bij voorkeur
+bevatten universele groepen dan ook enkel globale groepen.
+
 \section{Hoe en waarom worden deze soorten groepen in de praktijk best gebruikt,
 al dan niet gecombineerd? Van welke omstandigheden is dit afhankelijk?
 Illustreer aan de hand van concrete voorbeelden.}
 
+\begin{description}
+	\item[Lokale groepen] worden typisch gebruikt om rechten en machtigingen
+		toe te kennen, door voor elke bron of verzameling bronnen één of
+		meerdere lokale groepen te creëren en de toegang tot die bron in
+		te stellend oor één keer toegang te verlenen aan de lokale
+		groepen. De toegang tot de bron wordt nadien enkel gewijzigd
+		door het lidmaatschap te manipluleren. Lokale groepen zijn niet
+		alleen zichtbaar op domeincontrollers, maar ook op alle
+		werkposten en lidservers. Dit neemt de noodzaak weg om uit
+		veiligheidsoverwegingen alle lidservers te configureren als
+		domeincontrollers.
+	\item[Globale groepen] worden eerder gebruikt als containers voor
+		gebruikers die dezelfde machtigigen of rechten nodig zullen
+		hebben en als leden van andere groepen, in het domein zelf of in
+		een trusting domein. Als je een verzameling gebruikers,
+		afkomstig uit een ander domein toegang wil verlenen tot een
+		bepaalde bron, dan kun je deze verzameling best groeperen in een
+		glogale groep (van het vreemde domein) en deze lid maken van een
+		lokale groep, gekoppeld aan de bron.
+	\item[Universele groepen] verenigt op het eerste zicht de beste
+		karakteristieken van zowel lokale als globale groepen.
+		Universele groepen worden net als lokale groepen typisch
+		gebruikt om rechten en machtigingen toe te kennen, maar bieden
+		het voordeel dat ze in alle domeinen tegelijkertijd geldig zijn
+		en dus slechts eenmaal moeten gedefinieerd worden. Zowel de
+		namen als de leden van universele groepen worden in de global
+		catalog opgenomen, en dus wordt deze zeer groot. Bij voorkeur
+		bevatten universele groepen enkel globale groepen.
+\end{description}
+
 \section{Welke conversieregels gelden er tussen de diverse soorten groepen.
 Behandel hierbij alle mogelijke combinaties.}
+
+Lokale groepen mogen niet naar universele groepen geconverteerd worden als die
+lokale groepen andere lokale groepen bevatten. Dit omdat een universele groep
+geen lokale groep kan bevatten.
+
+Als een globale groep een andere globale groep bevat kan dat lid niet
+geconverteerd worden naar een universele groep. Dit omdat globale groepen geen
+universele groepen kunnen bevatten.
+
+Er mogen verschuivingen optreden als er geen regels gebroken worden.
+
+Universele groepen kunnen terug naar zowel globale groepen als lokale groepen
+teruggebracht worden op voorwaarde dat een universele groep leden heeft die tot
+1 domein behoren.
+
+Een globale groep wordt per domein gedefinieerd integenstelling tot een
+universele groep dat in de global catalog opgeslagen wordt en dus over de
+verschillende domeinen van het forest gekend is. Dus als een universele groep
+leden bevat over meerdere domeinen, is deze conversie niet mogelijk.
