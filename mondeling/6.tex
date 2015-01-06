@@ -33,14 +33,13 @@ vervult, wordt een lidserver (member server) genoemd. Meestal fungeren
 lidservers als file servers, toepassingsservers, database servers, web servers,
 firewalls, routers of een combinatie hiervan. In Windows Server 2008+ worden
 dergelijke functies gegroepeerd op drie niveau's:
-\begin{itemize}
-	\item Server rollen (DNS, DHCP, ...) en Web Server implementeren
+\begin{description}
+	\item[Server rollen] (DNS, DHCP, ...) en Web Server implementeren
 		primaire serverfuncties.
-	\item Sommige, meer complexe, server rollen bieden optionele
-		componenten, vertolkt door role services.
-	\item Features (Powershell, SNMP, backup, ...) zorgen voor meer
+	\item[Role services] optionele, meer complexe, server rollern.
+	\item[Features] (Powershell, SNMP, backup, ...) zorgen voor meer
 		ondersteunende functies.
-\end{itemize}
+\end{description}
 Men kan aanvullende server rollen, rol services en features configureren via
 respectievelijk de Add Roles, Add Role Services en Add Features wizards van
 Server Manager. Dit kan ook met de ServerManagerCmd opdracht.
@@ -58,11 +57,11 @@ globale catalogus ondersteund worden?}
 Indien er slechts een domein in het forest is, mogen alle domeincontrollers tot
 global catalog server worden gepromoveerd. Om het replicatieverkeer te beperken,
 zorgt me er best voor dat er steeds een global catalog server per site aanwezig
-si. De promotie gebeurt door de global catalog optie aant evinken in de general
+is. De promotie gebeurt door de global catalog optie aan tevinken in de general
 tabpagina van de properties van de NSDS settings van een domeincontroller. Dit
 is terug te vinden in de AD sites and services snap-in. De global catalog server
 heeft een kopie van alle objecten van de domeingegevens van het domein waarin de
-blobal catalog server zich bevindt, en een kopie van een subset van de
+global catalog server zich bevindt, en een kopie van een subset van de
 eigenschappen van alle objecten van het gehele forest. Deze subset wordt enkel
 gerepliceerd tussen GC servers. Verder bevat de GC nog een kopie van de
 configuratiegegevens van alle domeinen in het forest, en het unieke schema van
@@ -74,7 +73,7 @@ in de global catalog.
 Domeincontrollers configureren als Read Only Domain Controller is goede praktijk
 als de fysieke beveiliging van het toestel niet kan worden gegarandeerd, of waar
 specifieke interactieve toepassingen enkel op een DC kunnen worden uitgevoerd.
-Eeen bijkomend voordeel is dat het replicatieverkeer in een enkele richting
+Een bijkomend voordeel is dat het replicatieverkeer in één enkele richting
 wordt beperkt. Er kan ook nog configuratie van een filtered attribute set (welke
 kenmerken worden gerepliceerd, en welke niet) en een password replication policy
 worden geconfigureerd met credential caching voor specifieke gebruikers en

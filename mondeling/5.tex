@@ -10,7 +10,7 @@ kan pas toegang krijgen tot bronnen in een ander domein als er een
 vertrouwenspad is van het trusting domein naar het trusting domein. Een
 vertrouwenspad is een continue rij vertrouwensrelaties tussen domeinen. Dat een
 gebruiker door een trusting domeincontroller is geverifieerd, wil nog niet
-automatisch zeggen dat de ggebruiker toegang heeft tot de bronnen in dat domein.
+automatisch zeggen dat de gebruiker toegang heeft tot de bronnen in dat domein.
 Deze toegang wordt geregeld met gebruikersrechten en machtigingen die aan de
 gebruiker toegekend zijn door de domeinbeheerder van het trusting domein.
 
@@ -38,7 +38,7 @@ Transitieve vertrouwensrelaties kunnen alleen bestaan tussen Windows Server
 domeinen in hetzelfde forest, tenzij de diverse forests minimaal op Windows
 Server 2003 functioneel niveau staan. In dat geval kun je manueel tussen de root
 domeinen van de forests bi-directionele en transitieve forest trusts
-configureren, waardoor je een gederatie of ream van forests krijgt. Elk koppel
+configureren, waardoor je een federatie of realm van forests krijgt. Elk koppel
 domeinen in een dergelijke realm vertrouwt elkaar wederzijds. Bij meerdere
 forests moet men forest trusts configureren tussen elk koppel forests.
 Realm trusts, zijn een veralgemening van forest trusts, die vertrouwenspaden
@@ -48,9 +48,11 @@ als niet-transitief gedefinieerd worden.
 Forest en realm vertrouwensrelaties zijn expliciete vertrouwensrelaties: trusts
 die je zelf maakt, in tegenstelling tot de vertrouwensrelaties die automatisch
 gemaakt worden tijdens de creatie van het domein.
+
 Een verkorte vertrouwensrelatie is ook een expliciete vertrouwenrelatie en
 maakt het mogelijk om een vertrouwenspad tussen 2 domeinen, in grote en complexe
 trees, te verkorten. Dit moet het aanmeldingsproces versnellen.
+
 Het laatste type expliciete vertrouwensrelatie is de externe vertrouwensrelatie.
 Dit is een enkelvoudige vertrouwingsrelatie waarbij één domein een ander domein
 vertrouwt. Deze zijn niet-transitief. Je kan geen externe relatie instellen
@@ -147,7 +149,7 @@ stellen. Als laatste oorzaak voor verschillende NT4 master domeinen kan het zijn
 dat bepaalde onderdelen van de organizatie controle moeten kunnen uitoefenen
 over eigen bronnen en gebruikers. Dit is bij de invoering van AD de enige reden
 om aparte domeinen te behouden in de verschillende sites. De migratie gebeurt op
-een vand de volgende manieren:
+een van de volgende manieren:
 \begin{enumerate}
 	\item Elk NT4 domein wordt geupgraded naar de root van een Windows
 		Server tree in hetzelfde forest. Alle gemachtigde gebruikers
