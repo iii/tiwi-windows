@@ -70,43 +70,44 @@ kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
 
 \subsection{Inhoudsregels}
 
-\begin{itemize}
-	\item De mustContain en systemMustContain kenmerken bevatten de lijst
+\begin{description}
+	\item[mustContain en systemMustContain] kenmerken bevatten de lijst
 		met kenmerken die verplicht zijn in elk exemplaar van de klasse.
 		Een kenmerk is verplicht van zodra het verplicht is in één van
 		de hiërarchische superklassen van de klasse, ook al is het voor
 		de klasse zelf als optioneel gemarkeerd.
-	\item De mayContain en systemMayContain kenmerken bevatten de lijst met
+	\item[mayContain en systemMayContain] kenmerken bevatten de lijst met
 		kenmerken die optioneel zijn.
-	\item Het rDNAttID kenmerk bepaalt welk kenmerk van een klasse gebruikt
+	\item[rDNAttID] kenmerk bepaalt welk kenmerk van een klasse gebruikt
 		wordt om de RDN van objecten te bepalen. Meestal staat dit
 		kenmerk ingesteld op de waarde cn (common name).
-	\item Het defaultSecurityDescriptor kenmerk bepaalt de expliciete
+	\item[defaultSecurityDescriptor] kenmerk bepaalt de expliciete
 		machtigingen die gelden voor objecten van deze klasse. Dit kan
 		een eenvoudige oplossing bieden om het beheer van specifieke
 		objecten te delegeren.
-	\item Als SystemOnly de waarde True heeft, kunnen de structuurregels en
-		de inhoudsregels van de klasse niet gewijzigd worden.
-	\item Met het isDefunct kenmerk kunnen schema objecten gedeactiveerd
+	\item[SystemOnly] als dit de waarde True heeft, kunnen de
+		structuurregels en de inhoudsregels van de klasse niet gewijzigd
+		worden.
+	\item[isDefunct] hiermee kunnen schema objecten gedeactiveerd
 		worden. Zo kunnen er geen nieuwe exemplaren van de klasse
 		aangemaakt worden. AD ondersteunt geen verwijdering van
 		schemaobjecten.
-\end{itemize}
+\end{description}
 
 \subsection{Structuurregels}
-\begin{itemize}
-	\item Het objectClassCategory kenmerk heeft een integer waardie die de
+\begin{description}
+	\item[objectClassCategory] kenmerk heeft een integer waardie die de
 		categorie van de klasse bepaalt: structurele klasse (1),
 		abstracte klasse (0 of 2) of hulpklasse (3). Abstracte klassen
 		zijn gelijkaardig aan structurele klassen, maar kunnen zelf geen
 		objecten genereren.
-	\item defaultObjectCategory
-	\item Het subClassOf kenmerk bepaald de onmiddelijke superklasse van een
+	\item[defaultObjectCategory]
+	\item[subClassOf] kenmerk bepaald de onmiddelijke superklasse van een
 		klasse.
-	\item De auciliaryClass en systemAuxiliaryClass kenmerken bevatten alle
+	\item[auciliaryClass en systemAuxiliaryClass] kenmerken bevatten alle
 		mogelijke hulpklassen waarvan deze klasse kenmerken kunnen
 		overnemen.
-	\item De possSuperiors en systemPossSuperiors kenmerken van elk
+	\item[possSuperiors en systemPossSuperiors] kenmerken van elk
 		classSchema object definieren de mogelijke hiërarchische
 		relaties tussen objecten van een klasse. Het feit of een klasse
 		containerobjecten representeert, wordt niet bepaald door een
@@ -117,7 +118,7 @@ kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
 		voor zijn objecten bijgevolg niet van welke klasse het objecten
 		kan bevatten als containerobject, maar wel van welke klasse de
 		objecten als container kunnen optreden.
-\end{itemize}
+\end{description}
 
 \section{Welke andere types objecten bevat het Active Directory schema, en wat
 is hun bedoeling?}
