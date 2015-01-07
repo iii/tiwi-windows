@@ -24,12 +24,12 @@ groep welke toegangsrechten heeft voor het object. De specifieke machtigingen
 die kunnen worden toegekend is afhankelijk van het object waarop ze worden
 toegepast.
 
-De ACL bestaat uit Access Control Entries of machtigingsvermeldingen. Een ACE
-kan zowel een machtiging toekennen als ontzeggen. Machtigingen worden best zo
-veel mogelijk op groepen toegepast om beheer te vereenvoudigen.
+De ACL bestaat uit Access Control Entries (ACEs) of machtigingsvermeldingen. Een
+ACE kan zowel een machtiging toekennen als ontzeggen. Machtigingen worden best
+zo veel mogelijk op groepen toegepast om beheer te vereenvoudigen.
 
 ACEs worden in canonieke volgorde verwerkt. Eerst komen de ACEs die machtigingen
-ontzeggen aan de beurt, daarna egene die toekennen. Ontzeggen is steeds het
+ontzeggen aan de beurt, daarna degene die toekennen. Ontzeggen is steeds het
 sterkste kenmerk, een toekenning van een machtiging wordt genegeerd als die
 eerder ontzegt werd. Afwijken van deze volgorde kan enkel programmatorisch.
 
@@ -64,7 +64,7 @@ zou dus de share machtigingen of FULL Control kunnen zetten voor iedereen en
 verdere vernauwing van de rechten aan de hand van NTFS machtigingen bekomen, dit
 heeft echter 2 problemen:
 \begin{enumerate}
-	\item Fat bestandssystemen kennen geen NTFS machtigingen.
+	\item FAT bestandssystemen kennen geen NTFS machtigingen.
 	\item Gebruikers met volledige share machtigingen kunnen alle submappen
 		zien ook al hebben ze 0 NTFS machtigingen hierop. Dit kan
 		opgelost worden met Access Based Enumeration.
@@ -106,7 +106,7 @@ machtigingen:
 
 NTFS machtigingen toewijzen is niet moeilijk, maar in een grote omgeving met
 veel bronnen en gebruikers moet je zeer methodisch en consistent te werk gaan.
-De ACL editor, van een bestand of map, kan opgeroepen wordne via de Security
+De ACL editor, van een bestand of map, kan opgeroepen worden via de Security
 tabpagina van het object. Hier kunnen ACEs toegevoegd en verwijderd worden. De
 grijze slectievakjes duiden overgenomen machtigingen aan.
 
@@ -136,7 +136,7 @@ De gebruiker die de actie onderneemt wordt eigenaar van de bestanden wanneer ze
 bij de bestemming aankomen.
 
 Wanneer de bestemming een container is op een ander NTFS volume, of de bestanden
-met standaard tools wordne gekopieerd, vervallen de expliciete machtigingen. De
+met standaard tools worden gekopieerd, vervallen de expliciete machtigingen. De
 machtigingen van de doelcontainer worden overgenomen door het object zelf en al
 zijn onderliggende objecten. Objecten die naar een niet NTFS volume worden
 gekopiëerd, verliezen alle machtigingen.

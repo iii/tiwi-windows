@@ -17,7 +17,8 @@ eigen domein. Analoog beschikken alle domeincontrollers in een forest over het
 directory schema en de configuratiegegevens, en wordt deze informatie
 gedistribueerd doorheen het hele forest. De replicatieservice zorgt ervoor dat
 directory gegevens altijd actueel zijn. Behalve voor wat de operations master
-functies betreft, zijn alle Windows Server domeincontrollers dan ook equivalent.
+functies betreft, zijn alle Windows Server domeincontrollers in een domein dan
+ook equivalent.
 
 \section{Hoe wordt dit in Windows Server (ondermeer te opzichte van NT4)
 gerealiseerd: Bespreek de verschillende technische kenmerken en concepten van
@@ -31,7 +32,7 @@ Het is belangrijk om ervoor te zorgen dat het replicatie verkeer relatief
 beperkt blijft. In AD worden daarom alleen gewijzigde directory gegevens
 gerepliceerd. Om ervoor te zorgen dat een specifieke wijziging niet meerdere
 malen naar dezelfde domeincontroller wordt gerepliceerd, wordt er gebruik
-gemaakt van een 64-bits Updata Sequence Number (USN). Samen met het GUID van een
+gemaakt van een 64-bits Update Sequence Number (USN). Samen met het GUID van een
 domeincontroller wordt dit de Up-to-Dateness Vector (UTD vector) genoemd. Elke
 domeincontroller houdt in een tabel bij wat de meest recente UTD vector is die
 hij van elke andere controller ontvangen heeft. Dit uitwisselingsprotocol is op
@@ -46,11 +47,11 @@ van de metadata kan deze controller precies te weten komen welke wijzigingen hij
 moet opsturen.
 
 Met het multi-master model is het mogelijk dat hetzelfde kenmerk op meer dan één
-domeincontroller tegelijkertijd verwijderd wordt. Dit wordt opgelost door de
+domeincontroller tegelijkertijd gewijzigd wordt. Dit wordt opgelost door de
 wijziging op het oudste tijdstip te negeren. Bij exact dezelfde tijd wordt de
 wijziging van de domeincontroller met het hoogste GUID geaccepteerd. Voor
-sommige objecten is dit niet goed genoeg en kunnen verzoeken tot wijzigingen
-enkel door 1 specifieke domeincontroller verwerkt worden.
+sommige objecten (schema objecten) is dit niet goed genoeg en kunnen verzoeken
+tot wijzigingen enkel door 1 specifieke domeincontroller verwerkt worden.
 
 Verwijdering van objecten biedt een bijkomend probleem: men moet vermijden dat
 het object opnieuw gecreëerd wordt door replicatie vanuit een andere
@@ -72,10 +73,10 @@ Ook voor elke applicatiepartitie is er een aparte replicatietopologie.
 Windows Server replicatie is een pull, en geen push mechanisme. De
 domeincontrollers brengen elkaar wel op de hoogte van de wijzigingen, maar het
 opvragen gebeurt op iniatief van de replicatiepartner. Wijzigingen worden ook
-opgespaard in tijdsintervallenv an standaard vijf minuten en pas daarna
+opgespaard in tijdsintervallen van standaard vijf minuten en pas daarna
 verstuurd. Dit wordt propagation damping genoemd en wordt uitgeschakeld voor
-objecten die met beveiliging te maken hebben. Automatisch om het polling als er
-geen meldingen van een domeincontroller zijn gekomen.
+objecten die met beveiliging te maken hebben. Automatisch om het uur polling als
+er geen meldingen van een domeincontroller zijn gekomen.
 
 Windows Server replicatie is multi-threaded: een domeincontroller kan simultaan
 repliceren met diverse partners. Een laatste verschil met NT4 is de kleinste
