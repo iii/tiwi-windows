@@ -30,7 +30,7 @@ identificeren.}
 		\begrip{hogent.be/iii/beelsebub}. De meeste hulpmiddelen in
 		Active Directory tonen de canonieke naam, in plaats van de DN.
 		Het wordt opgeslagen in het kenmerk \begrip{canonicalName} van
-		het object.
+		het object. Dit is een geconstrueerd kenmerk.
 	\item[Globaal Uniek ID (GUID)] is een 128-bit getal dat niet kan
 		gewijzigd worden. Het wordt bepaald bij de creatie van het
 		object. Ook als het object verplaatst of gewijzigd wordt zal de
@@ -43,7 +43,7 @@ identificeren.}
 objecten.}
 
 Security Principal Objects (SPN) zijn AD-objecten waaraan Security ID's (SID)
-zijn goegewezen. De SID wordt opgeslagen in het \begrip{objectSid} kenmerk.
+zijn toegewezen. De SID wordt opgeslagen in het \begrip{objectSid} kenmerk.
 SPN objecten worden, na aanmelding op het netwerk, gebruikt voor het verlenen
 van toegang tot domeinbronnen. Ze zijn van toepassing op gebruikeraccounts,
 computeraccounts, groepen en domeinen. SIDs zijn uniek, ook in de tijd: nieuw
@@ -67,7 +67,7 @@ in het \begrip{sIDHistory} kenmerk.
 De RDN, DN en canonieke naam zijn ongeschikt als aanmeldingsnaam omdat ze bij
 verplaatsing veranderen. SID en GUID zijn mits hun numerieke karakter ook niet
 geschikt hiervoor. Elke gebruikersaccount heeft ook een \engels{User Principal
-Name} (UPN), aka aanmeldingsnaam. Wordt bij het aanmaken van het account
+Name} (UPN), aka aanmeldingsnaam. Deze wordt bij het aanmaken van het account
 ingevoerd door de beheerder en opgeslagen in het \engels{userPrincipalName}
 kenmerk. Dit moet uniek zijn binnen het forest. UPN bestaat standaard uit de RDN
 van de gebruiker en de UPN suffix, gekoppeld met het @-teken.
@@ -102,7 +102,7 @@ De SPN is essentieel tijdens de wederzijdse verificatie van client software en
 de server die een bepaalde service biedt: de client zoekt een computeraccount op
 aan de hand van de SPN naam van de service waarmee hij een verbinding tot stand
 wil brengen. De SPN wordt bepaald door het multi-valued
-\engels{servicePrincipalName} kenmerk, oa samengesteld op basis van DNS naame en
+\engels{servicePrincipalName} kenmerk, oa samengesteld op basis van DNS naam en
 eventueel SRV records die naar het toestel verwijzen.
 
 \section{Enkele veel gebruikte klassen vertonen nog meer identificerende
@@ -152,7 +152,7 @@ partities}
 		domeinen. Er wordt we een subset van alle kenmerken van alle
 		domeinen bijgehouden in de globale catalogus.
 	\item[Configuratiegegevens] beschrijven de fysieke topologie van de
-		directory. Dit bevat onder andere een lisjt van alle
+		directory. Dit bevat onder andere een lijst van alle
 		domeinstructuren, de locaties van de domeincontrollers en de
 		global catalog controllers, de sites en de replicatietopologie.
 		De meeste gemeenschappelijke instellingen van het ganse forest

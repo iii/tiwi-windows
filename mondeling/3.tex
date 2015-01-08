@@ -22,7 +22,7 @@ van de superklasse over, inclusief de structuurregels en de inhoudsregels.
 Overname werkt recursief.
 Een klasse kan enkel kenmerken overnemen van zijn onmiddelijke superklasse en
 van speciaal hiervoor bestemde hulpklassen. Hulpklassen zijn klassen die zelf
-geen kenmerken kunnen genereren.
+geen objecten kunnen genereren.
 De kenmerken auxiliaryClass en systemAuxiliaryClass van elk classSchema object
 bevatten alle mogelijke klassen waarvan deze klasse kenmerken kan overnemen.
 Kenmerken met een LDAP display naam die beginnen met system zijn in
@@ -96,12 +96,13 @@ kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
 
 \subsection{Structuurregels}
 \begin{description}
-	\item[objectClassCategory] kenmerk heeft een integer waardie die de
+	\item[objectClassCategory] kenmerk heeft een integer waarde die de
 		categorie van de klasse bepaalt: structurele klasse (1),
 		abstracte klasse (0 of 2) of hulpklasse (3). Abstracte klassen
 		zijn gelijkaardig aan structurele klassen, maar kunnen zelf geen
 		objecten genereren.
-	\item[defaultObjectCategory]
+	\item[defaultObjectCategory] geeft de standaard objectCategory aan voor
+		de klasse.
 	\item[subClassOf] kenmerk bepaald de onmiddelijke superklasse van een
 		klasse.
 	\item[auciliaryClass en systemAuxiliaryClass] kenmerken bevatten alle
@@ -144,7 +145,7 @@ is hun bedoeling?}
 \section{Hoe en met welke middelen kan het Active Directory schema uitgebreid
 worden?}
 
-Uitbereidingen en wijzigingen van het schema zijn risicovol, geldne voor het
+Uitbereidingen en wijzigingen van het schema zijn risicovol, gelden voor het
 hele forest en kunnen potentieel de hele infrastructuur onbruikbaar maken.
 Schema objecten worden daarom ook beveiligd met ACL's. Aanmaken van geheel
 nieuwe structurele klassen en wijzigen van attributen van bestaande klassen
