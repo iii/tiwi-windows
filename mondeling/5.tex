@@ -1,0 +1,176 @@
+\chapter{Active Directory domeinstructuren}
+
+\section{Wat is de bedoeling van vertrouwensrelaties?}
+
+Tussen 2 domeinen kan een vertrouwensrelatie tot stand gebracht worden, zodat de
+gebruikers in het ene, trusted domein kunnen geverifieerd worden door de
+domeincontroller in het andere, trusting domein. Vertrouwensrelaties worden
+weergegeven met een pijl in de richting van het trusted domein. Een gebruiker
+kan pas toegang krijgen tot bronnen in een ander domein als er een
+vertrouwenspad is van het trusting domein naar het trusting domein. Een
+vertrouwenspad is een continue rij vertrouwensrelaties tussen domeinen. Dat een
+gebruiker door een trusting domeincontroller is geverifieerd, wil nog niet
+automatisch zeggen dat de gebruiker toegang heeft tot de bronnen in dat domein.
+Deze toegang wordt geregeld met gebruikersrechten en machtigingen die aan de
+gebruiker toegekend zijn door de domeinbeheerder van het trusting domein.
+
+\section{Bespreek de verschillende soorten vertrouwensrelaties.}
+
+\subsection{Automatische vertrouwensrelaties}
+
+Windows Server maakt automatisch vertrouwensrelaties aan tussen domeinen en hun
+child domeinen. Deze vertrouwensrelaties kunnen niet verbroken worden en zijn
+automatisch bi-directioneel en transitief. Windows Server maakt ook automatisch
+vertrouwensrelaties aan tussen de trees van eenzelfde forest: de root domeinen
+van alle trees in het forest vormen transitieve vertrouwensrelaties met het
+forest root domein van het forest.
+Aangezien Windows Server vertrouwensrelaties bi-directioneel en transitief zijn,
+heeft een domein dat nieuw aangemaakt wordt in een tree of forest, automatisch
+vertrouwensrelaties met alle andere Windows Server domeinen in de tree of het
+forest.
+Om in NT 4 hetzelfde te bekomen, moet je als systeembeheerder zelf
+vertrouwensrelaties construeren, en dan nog in twee richtingen, dit met elk
+bestaand domein.
+
+\subsection{Expliciete vertrouwensrelaties}
+
+Transitieve vertrouwensrelaties kunnen alleen bestaan tussen Windows Server
+domeinen in hetzelfde forest, tenzij de diverse forests minimaal op Windows
+Server 2003 functioneel niveau staan. In dat geval kun je manueel tussen de root
+domeinen van de forests bi-directionele en transitieve forest trusts
+configureren, waardoor je een federatie of realm van forests krijgt. Elk koppel
+domeinen in een dergelijke realm vertrouwt elkaar wederzijds. Bij meerdere
+forests moet men forest trusts configureren tussen elk koppel forests.
+Realm trusts, zijn een veralgemening van forest trusts, die vertrouwenspaden
+leggen tussen Windows Server 2008 domeinen en willekeurige Kerberos v5 realms.
+Een realm trust kan zowel bi-directioneel als enkelvoudig, en zowel transitief
+als niet-transitief gedefinieerd worden.
+Forest en realm vertrouwensrelaties zijn expliciete vertrouwensrelaties: trusts
+die je zelf maakt, in tegenstelling tot de vertrouwensrelaties die automatisch
+gemaakt worden tijdens de creatie van het domein.
+
+Een verkorte vertrouwensrelatie is ook een expliciete vertrouwenrelatie en
+maakt het mogelijk om een vertrouwenspad tussen 2 domeinen, in grote en complexe
+trees, te verkorten. Dit moet het aanmeldingsproces versnellen.
+
+Het laatste type expliciete vertrouwensrelatie is de externe vertrouwensrelatie.
+Dit is een enkelvoudige vertrouwingsrelatie waarbij één domein een ander domein
+vertrouwt. Deze zijn niet-transitief. Je kan geen externe relatie instellen
+tussen AD domeinen in hetzelfde forest (heeft al automatische relaties). Dit kan
+wel ingesteld worden tussen:
+\begin{itemize}
+	\item individuele domeinen in een ander forest.
+	\item met NT 4 domeinen
+\end{itemize}
+
+\section{Op welke diverse manieren kunnen vertrouwensrelaties gecreëerd en
+gecontroleerd worden? Bespreek ook de optionele configuratiemogelijkheden}
+
+Enkel de expliciete vertrouwensrelaties moeten manueel geconfigureerd worden.
+Dit kan op twee verschillende manieren geconfigureerd worden. Als je een
+expliciete vertrouwenrelatie wil maken, moet je beschikken over de domeinnamen
+en een gebruikersaccount met machtiging om vertrouwensrelaties in beide domeinen
+te maken. Elke vertrouwensrelatie krijgt een wachtwoord toegewezen, dat bekend
+moet zijn bij de beheerders van beide domeinen van de vertrouwensrelatie. Na het
+opzetten van de vertrouwensrelatie wordt dit wachtword niet meer gebruikt.
+
+\subsection{Active Directory Domains en Trust snap-in}
+
+Deze snap-in is beschikbaar in domein.msc. Het aanmaken van de
+vertrouwensrelatie kan door met de rechmuisknop op een domein te klikken en
+achtereenvolgens Properties en de Trusts tabpagina te selecteren, en daarna de
+New Trust wizard op te starten.
+
+\subsection{Via de command-line}
+
+In de command prompt kan je een vertrouwensrelatie configureren met de netdom
+trust opdracht. Met netdom query trust krijg je een overzicht van alle
+vertrouwensrelaties en hun toestand.
+
+\subsection{Optionele configuratiemogelijkheden}
+\begin{itemize}
+	\item Standaard worden alle gebruikers van het trusted domein opgenomen
+		in de Authenticated Users impliciete groep van het trusting
+		domein. Men kan echter ook voor selective authentication kiezen,
+		waardoor dit per individuele gebruiker of gebruikersgroep
+		expliciet moet ingesteld worden.
+	\item Indien men gebruik maakt van SID Filtering, dan wordt enkel
+		rekening gehouden met de SID opgeslagen in het objectSid
+		attribuut van de objecten in het trusted domein. Indien men SID
+		Filtering uitschakelt, dan verwerkt het trusting domein ook de
+		SIDs opgeslagen in het sIDHistory attribuut. Malfide beheerders
+		in het trusted domein kunnen langs deze weg zichzelf meer
+		machtigingen en rechten toeeigenen in het trusting domein.
+\end{itemize}
+
+\section{Welke verschillen zijn er in praktijk tussen NT 4.0 en Windows Server
+domeinstructuren? Bespreek de alternatieve mogelijkheden bij de conversie van
+een NT 4.0 domeinstructuur naar een Windows Server omgeving.}
+
+Een eerste verschil tussen NT4 en Windows Server is het conceptueel onderscheid
+tussen master domeinen en resource domeinen. Een master domein bevat gebruikers
+en groepen, terwijl een resource domein lidservers bevat die diensten aanbieden
+aan de gebruikers, en zelf nauwelijks gebruikers bevat. De NT4 domeinstructuren
+bestaan meestal uit één (of meerdere) master domeinen, en meerdere resource
+domeinen. Er worden bidirectionele vertrouwensrelaties aangemaakt tussen alle
+masterdomeinen onderling, en unidirectionele vertrouwensrelaties waarbij elk
+resourcedomein elk masterdomein vertrouwt.
+
+De omschakeling van NT4 naar Windows Server moet geleidelijk en gefaseerd
+gebeuren. Het aantal domeinen moet hierbij dalen. De organizational units (OUs)
+van AD vervangen het conceptuele onderscheid tussen resource- en masterdomeinen.
+De upgrade begint steeds bovenaan in de domeinhiërarchie: het masterdomein
+krijgt als eerste een upgrade, daarna volgen de resource domeinen.
+
+Bestaande domeinen kunnen worden gesimuleerd door OUs in het Windows Server
+Domein. We bekomen zo een getrouwe weerspiegeling van de oude structuur.
+Eventueel kunnen aanvullende structuren worden toegevoegd om een meer
+gedetaileerde ordening te verkrijgen. Op deze manier wordt het aantal domeinen
+en trusts gereduceerd.
+
+Indien er bepaalde bedrijfseenheden als afzonderlijke organisaties moeten worden
+behandeld, is een forest met afzonderlijke trees een goede oplossing. De
+gebruikersaccounts worden dan verplaatst naar de domeinen met de bronnen die ze
+gebruiken, in plaats van het centrale root domein.
+
+Indien de oude structuur meerdere NT4 master domeinen bevat, zijn er hiervoor
+een aantal mogelijke oorzaken. In eerste instantie kan het zijn dat een enkel
+master domein te veel gebruikers en groepen zou bevatten. Deze veroorzaken
+immers instabiliteit van de SAM databank. Dit probleem is meteen opgelost door
+AD, omdat het veel schaalbaarder is. Een andere mogelijk oorzaak is de
+geografische situering. Het is mogelijk dat de verschillende geografische
+locaties verbonden zijn door links met kleine bandbreedte. Dit probleem kan
+worden opgevangen door AD sites te configureren. Het replicatie verkeer kan nog
+verder worden beperkt door gebruik te maken van RODC's. Een derede mogelijkheid
+is de noodzaak aan een versschillende wachwoordbeleid voor bepaalde
+gebruikersgroepen. Dit kan worden opgevangen door het domein functioneel niveau
+te verheffen naar Windows Server 2008, en een fine grained password policy in te
+stellen. Als laatste oorzaak voor verschillende NT4 master domeinen kan het zijn
+dat bepaalde onderdelen van de organizatie controle moeten kunnen uitoefenen
+over eigen bronnen en gebruikers. Dit is bij de invoering van AD de enige reden
+om aparte domeinen te behouden in de verschillende sites. De migratie gebeurt op
+een van de volgende manieren:
+\begin{enumerate}
+	\item Elk NT4 domein wordt geupgraded naar de root van een Windows
+		Server tree in hetzelfde forest. Alle gemachtigde gebruikers
+		krijgen hierdoor potentiële toegang tot alle bronnen in alle
+		domeinen van het forest. Het forest kan een gemeenschappelijk
+		schema, gemeeschppelijke configuratiegegevens en een
+		gemeenschappelijke global catalog delen.
+	\item Als alternatief kan elk NT4 domein worden geupgraded naar een
+		subdomein van een artificieel root domein van dezelfde tree. Dit
+		root domein heet een structural of placeholder domein omdat het
+		resources noch accounts bevat. Het is echter wel een uistekende
+		plaats om de global catalog onder te brengen.
+\end{enumerate}
+
+Als laatste mogelijkheid voor migratie kan er besloten worden om alle NT4
+domeinen samen te voegen tot één groot Windows Server domein. Dit kan op twee
+manieren. In de eerste manier worden alle domeinen eerst samgevoegd, en
+vervolgens geupgraded naar Windows Server. De oorspronkelijke domeinen worden
+dan omgezet in OUs. Er zijn hiervoor geen hulpmiddelen. De migratie gebeurt
+volledig manueel met behulp van commando lijn opdrachten. Als alternatief worden
+de afzonderlijkde domeinen eerst geupgraded naar Windows Server. Vervolgens
+wordt in elk van de masterdomeinen voor de resourcedomeinen een OU aangemaakt.
+De machines in de resourcedomeinen worden dan verplaatst naar de OUs in de
+masterdomeinen.

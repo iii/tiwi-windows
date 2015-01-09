@@ -1,0 +1,237 @@
+
+\documentclass[11pt,a4paper,oneside]{book}
+\usepackage{a4wide}                     % Iets meer tekst op een bladzijde
+\usepackage[dutch]{babel}               % Voor nederlandstalige hyphenatie (woordsplitsing)
+\usepackage{amsmath}                    % Uitgebreide wiskundige mogelijkheden
+\usepackage{amssymb}                    % Voor speciale symbolen zoals de verzameling Z, R...
+\usepackage{makeidx}                    % Om een index te maken
+\usepackage{url}                        % Om url's te verwerken
+\usepackage{graphicx}                   % Om figuren te kunnen verwerken
+\usepackage[small,bf,hang]{caption}     % Om de captions wat te verbeteren
+\usepackage{xspace}                     % Magische spaties na een commando
+\usepackage[utf8]{inputenc}           % Om niet ascii karakters rechtstreeks te kunnen typen
+\usepackage{float}                      % Om nieuwe float environments aan te maken. Ook optie H!
+\usepackage{flafter}                    % Opdat floats niet zouden voorsteken
+\usepackage{listings}                   % Voor het weergeven van letterlijke text en codelistings
+\usepackage[round]{natbib}              % Voor auteur-jaar citaties.
+\usepackage[nottoc]{tocbibind}		% Bibliografie en inhoudsopgave in ToC; zie tocbibind.dvi
+\usepackage{eurosym}                    % om het euro symbool te krijgen
+\usepackage{textcomp}                   % Voor onder andere graden celsius
+\usepackage{fancyhdr}                   % Voor fancy headers en footers
+\usepackage[Gray,squaren,thinqspace,thinspace]{SIunits} % Om elegant eenheden te zetten
+\usepackage[version=3]{mhchem}          % Voor elegante scheikundige formules
+
+% Volgend package is niet echt nodig. Het laat echter toe om gemakkelijk elektronisch
+% te navigeren in je pdf-document. Deze package moet altijd als laatste ingeladen worden.
+\usepackage[a4paper,plainpages=false]{hyperref}    % Om hyperlinks te hebben in het pdfdocument.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Algemene instellingen van het document.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% De splitsingsuitzonderingen
+\hyphenation{back-slash split-sings-uit-zon-de-ring}
+
+%\bibpunct{(}{)}{;}{y}{,}{,}             % Auteur-jaar citaties -- zie natbib.dvi voor meer uitleg; niet echt nodig
+
+% Het bibliografisch opmaak bestand.
+% ZORG ERVOOR DAT bibliodutch.bst ZICH IN JE WERKDIRECTORY BEVINDT!!!
+\bibliographystyle{bibliodutch}
+
+\setlength{\parindent}{0cm}             % Inspringen van eerste lijn van paragrafen is niet gewenst.
+
+\renewcommand{\baselinestretch}{1.2} 	% De interlinie afstand wat vergroten.
+
+\graphicspath{{figuren/}}               % De plaars waar latex zijn figuren gaat halen.
+
+\makeindex                              % Om een index te genereren.
+
+\setcounter{MaxMatrixCols}{20}          % Max 20 kolommen in een matrix
+
+% De headers die verschijnen bovenaan de bladzijden, herdefinieren:
+\pagestyle{fancy}                       % Om aan te geven welke bladzijde stijl we gebruiken.
+\fancyhf{}                              % Resetten van al de fancy settings.
+\renewcommand{\headrulewidth}{0pt}      % Geen lijn onder de header. Zet dit op 0.4pt voor een mooie lijn.
+\fancyhf[HL]{\nouppercase{\textit{\leftmark}}} % Links in de header zetten we de leftmark,
+\fancyhead[HR]{\thepage}                % Rechts in de header het paginanummer.
+% Activeer de volgende lijn en desactiveer de vorige om paginanummers onderaan gecentreerd te krijgen.
+%\fancyhf[FC]{\thepage}                  % Paginanummers onderaan gecentreerd.
+
+% PDF specifieke opties, niet strict noodzakelijk voor een thesis.
+% Is hetgeen verschijnt wanneer je in acroread de documentproperties bekijkt.
+\hypersetup{
+    pdfauthor = {Douwe De Bock},
+    pdftitle = {Opgeloste vragen besturingssystemen 3},
+    pdfsubject = {Opgeloste examen vragen voor mondeling en schriftelijk examen
+    van Windows},
+    pdfkeywords = {windows, bs3, tiwi, ldap}
+}
+
+
+% Het volgende commando zou ervoor moeten zorgen dat er een witte ruimte wordt gelaten tussen
+% elke paragraaf. Het zorgt ervoor dat er echter teveel witte ruimte komt boven en onder de
+% verschillende titels, gemaakt met \section, subsection...
+%%\setlength{\parskip}{0ex plus 0.3ex minus 0.3ex}
+
+% Vandaar dat we expliciet aangeven wanneer we wensen dat een nieuwe paragraaf begint:
+% \par zorgt ervoor dat er een nieuwe paragraaf begint en
+% \vspace zorgt voor vertikale ruimte.
+\newcommand{\npar}{\par \vspace{2.3ex plus 0.3ex minus 0.3ex}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nieuwe commando's
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% De differentiaal operator
+\newcommand{\diff}{\ensuremath{\mathrm{d}}} 
+
+% Super en subscript
+\newcommand{\supsc}[1]{\ensuremath{^{\text{#1}}}}   % Superscript in tekst
+\newcommand{\subsc}[1]{\ensuremath{_{\text{#1}}}}   % Subscript in tekst
+
+% Chemische formule font:
+\newcommand{\ch}[1]{\ensuremath{\mathrm{#1}}\xspace}	 
+% Chemische pijl naar rechts:
+\newcommand{\chpijlr}{\ensuremath{\hspace{1em}\longrightarrow\hspace{1em}}}
+% Chemische pijl naar links:
+\newcommand{\chpijll}{\ensuremath{\hspace{1em}\longleftarrow\hspace{1em}}}
+% Chemische pijl naar links en rechts:
+\newcommand{\chpijllr}{\ensuremath{\hspace{1em}\longleftrightarrow\hspace{1em}}}
+
+\newcommand{\vt}[1]{\ensuremath{\boldsymbol{#1}}} % vector in juiste lettertype
+\newcommand{\mx}[1]{\ensuremath{\mathsf{#1}}}	  % matrix in juiste lettertype
+
+% Het latex logo in een eenvoudiger commando steken
+\newcommand{\latex}{\LaTeX\xspace}
+
+% Het BibTeX logo
+\newcommand{\bibtex}{\textsc{Bib}\TeX\xspace}
+
+% Niew commando om bestandnamen anders weer te geven
+\newcommand{\bestand}[1]{\lstinline[basicstyle=\sl]{#1}\xspace}
+
+% Niew commando om commando tekst weer te geven
+\newcommand{\command}[1]{\lstinline[basicstyle=\tt]{#1}\xspace}
+\newcommand{\commandx}[1]{\index{#1}\lstinline[basicstyle=\tt]{#1}\xspace}
+
+%\lstset{morecomment={\%}}
+% Commando om latex commando`s weer te geven (x: voor indexing)
+%\newcommand{\lcommand}[1]{\lstinline[basicstyle={\tt},{language=[LaTeX]TeX}]{#1}\xspace}
+\newcommand{\lcommand}[1]{\lstinline[basicstyle={\tt}]{#1}\xspace}
+\newcommand{\lcommandx}[1]{\index{#1}\lstinline[basicstyle=\tt]{#1}\xspace}
+
+
+% Niew commando om vreemde taal weer te geven (hint: dit commando kan gebruikt
+%   worden om latijnse namen, die ook cursief moeten staan, weer te geven.
+\newcommand{\engels}[1]{\textit{#1}\xspace}
+\newcommand{\engelsx}[1]{\index{#1}\textit{#1}\xspace}
+
+% Niew commando om iets te benadrukken en tegelijkertijd in de index te steken.
+\newcommand{\begrip}[1]{\index{#1}\textbf{#1}\xspace}
+
+% Nieuw commando om figuren in te voegen. Gebruik:
+% \mijnfiguur[H]{width=5cm}{bestandsnaam}{Het bijschrift bij deze figuur}
+\newcommand{\mijnfiguur}[4][ht]{            % Het eerste argument is standaar `ht'.
+    \begin{figure}[#1]                      % Beginnen van de figure omgeving
+        \begin{center}                      % Beginnen van de center omgeving
+            \includegraphics[#2]{#3}        % Het eigenlijk invoegen van de figuur (2: opties, 3: bestandsnaam)
+            \caption{#4\label{#3}}          % Het bijschrift (argument 4) en het label (argument 3)
+        \end{center}
+    \end{figure}
+    }
+
+% Nieuw commando om figuren in te voegen. Gebruik:
+% \mijnfiguur[H]{bestand-tabular}{Het bijschrift bij deze tabel}    
+\newcommand{\mijntabel}[3][ht]{             % Het eerste argument is standaar `ht'.
+    \begin{table}[#1]                       % Beginnen van de table omgeving
+        \begin{center}                      % Beginnen van de center omgeving
+            \caption{#3\label{#2}}          % Het bijschrift (argument 3) en het label (argument 2)
+            \input{#2}                      % Invoer van de tabel
+        \end{center}
+    \end{table}
+    }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nieuwe wiskunde operatoren
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareMathOperator{\integ}{Integraal}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nieuwe omgevingen
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Een soort theorem omgeving
+\newtheorem{levensles}{Levensles}[chapter]
+
+% Om minder belangrijke delen iets kleiner te zetten.
+\newenvironment{MinderBelangrijk}{\small}{}
+
+% Een nieuwe omgeving om letterlijke latex tekst weer te geven.
+\lstnewenvironment{llt} 
+    {
+    \vspace{1.2ex plus 0.5ex minus 0.5ex}   % Beetje ruimte voor de letterlijke tekst
+    \lstset{                                % Enkele opties:
+        basicstyle={\small\tt},             % Iets kleiner
+        %language=[LaTeX]{TeX},              % Syntax highlighting
+        stepnumber=0,                       % De lijnen worden niet genummerd
+        breaklines=true,                    % Als een lijn te lang is, wordt hij afgebroken
+        basewidth={0.5em},                  % Breedte van een letter
+        xleftmargin=1em}                    % Inspringing van de linker marge
+    }
+    {\vspace{0.9ex plus 0.5ex minus 0.5ex}  % Beetje ruimte na de letterlijke tekst
+    }
+
+% Een nieuwe omgeving om algemene letterlijke tekst weer te geven.
+\lstnewenvironment{lt} 
+    {
+    \vspace{1.2ex plus 0.5ex minus 0.5ex}   % Beetje ruimte voor de letterlijke tekst
+    \lstset{                                % Enkele opties:
+        basicstyle={\small\tt},             % Iets kleiner en typmachine lettertype
+        stepnumber=0,                       % De lijnen worden niet genummerd
+        breaklines=true,                    % Als een lijn te lang is, wordt hij afgebroken
+        basewidth={0.5em},                  % Breedte van een letter
+        xleftmargin=1em}                    % Inspringing van de linker marge
+    }
+    {\vspace{0.9ex plus 0.5ex minus 0.5ex}  % Beetje ruimte na de letterlijke tekst
+    }
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Einde van de preamble.
+% Begin van de body:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\frontmatter
+
+\tableofcontents
+
+\mainmatter
+
+% De verschillende hoofdstukken:
+\part{Mondeling}
+\input{mondeling/1.tex}
+\input{mondeling/2.tex}
+\input{mondeling/3.tex}
+\input{mondeling/4.tex}
+\input{mondeling/5.tex}
+\input{mondeling/6.tex}
+
+\part{Schriftelijk}
+\input{schriftelijk/1.tex}
+\input{schriftelijk/2.tex}
+\input{schriftelijk/3.tex}
+\input{schriftelijk/4.tex}
+\input{schriftelijk/5.tex}
+\input{schriftelijk/6.tex}
+\input{schriftelijk/7.tex}
+
+\backmatter
+
+
+\end{document}
+

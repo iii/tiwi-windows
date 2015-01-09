@@ -1,0 +1,165 @@
+\chapter{classSchema objecten}
+
+\section{Bespreek het doel en de werking van classSchema objecten}
+
+Klassen zijn zelf ook objecten in het schema: voor elke klasse in het schema is
+er een classSchema object waarmee de klasse ingesteld wordt. Ze beschrijven de
+directory objecten die gemaakt kunnen worden.
+De kenmerken van classSchema objecten definiëren de klasse, en bevatten twee
+soorten regels: met structuurregels definieer je de mogelijke hiërarchische
+relaties tussen hetzij klassen, hetzij tussen objecten, terwijl inhoudsregels
+kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
+Door middel van overname kunnen van bestaande klassen nieuwe klassen aangemaakt
+worden.
+
+\section{Hoe benadert Active Directory het mechanisme van overerving?}
+
+Door overerving kan je van bestaande klassen nieuwe klassen maken. De
+onmiddelijke superklasse van een klasse wordt bepaald door het kenmerk
+subClassOf van het classSchema object. Speciale superklasse Top waar alle
+klassen (onrechtstreeks) van worden afgeleid. Een subklasse neemt de kenmerken
+van de superklasse over, inclusief de structuurregels en de inhoudsregels.
+Overname werkt recursief.
+Een klasse kan enkel kenmerken overnemen van zijn onmiddelijke superklasse en
+van speciaal hiervoor bestemde hulpklassen. Hulpklassen zijn klassen die zelf
+geen objecten kunnen genereren.
+De kenmerken auxiliaryClass en systemAuxiliaryClass van elk classSchema object
+bevatten alle mogelijke klassen waarvan deze klasse kenmerken kan overnemen.
+Kenmerken met een LDAP display naam die beginnen met system zijn in
+tegenstelling tot de corresponderende kenmerken niet wijzigbaar door beheerders
+van het schema.
+Het gebruik van hulpklassen kan zowel statisch (met auxiliaryClass kenmerk) als
+dynamisch (hulpklasse opgeven bij creatie) gebeuren.
+
+\section{Bespreek de diverse naamgevingen van classSchema objecten}
+
+Alle classSchema objecten in het schema hebben een viervoudige naamgeving, die
+alle vier uniek en gestandaardiseerd zijn:
+\begin{description}
+	\item[common name] is de RDN van het classSchema object in de schema
+		container. Opgeslagen in een kenmerk van het classSchema object
+		met als LDAP display naam \begrip{cn}.
+	\item[GUID] van de klasse is onafhankelijk van de GUID van het
+		classSchema object en kan automatisch gegenereerd worden bij
+		creatie van een nieuwe klasse. Opgeslagen in een kenmerk van het
+		classSchema object met als LDAP display naam
+		\begrip{schemaIDGUID}.
+	\item[LDAP display name] is belangrijk voor programmatische toegang.
+		Deze kan dikwijls, maar niet altijd, uit de common name afgeleid
+		worden door alle streepjes te verwijderen, en de eerste letter
+		niet in hoofdletter te vermelden. Opgeslagen in een kenmerd van
+		het classSchema object met als LDAP display naam
+		\begrip{IDAPDisplayName}.
+	\item[Object ID] die geldt als interne representatie.
+		X.500 IDs worden verleend door speciale autoriteiten, en zijn
+		gegarandeerd uniek in alle netwerken wereldwijd. Het is een
+		decimale reeks met punten, en worden hiërarchisch toegekend. Je
+		kan een OID tak aanvragen bij de regionale ISO vertegenwoordiger
+		of je kan een uniek OID laten genereren in een microsoft subtak
+		met oidgen. Opgeslagen in een kenmerk van het classSchema
+		object met als LDAP display naam \begrip{governsID}.
+\end{description}
+
+\section{Bespreek de belangrijkste kenmerken van classSchema objecten, en hoe
+die ingesteld kunnen worden.}
+
+De kenmerken van classSchema objecten definiëren de klasse, en bevatten twee
+soorten regels: met structuurregels definieer je de mogelijke hiërarchische
+relaties tussen hetzij klassen, hetzij tussen objecten, terwijl inhoudsregels
+kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
+
+\subsection{Inhoudsregels}
+
+\begin{description}
+	\item[mustContain en systemMustContain] kenmerken bevatten de lijst
+		met kenmerken die verplicht zijn in elk exemplaar van de klasse.
+		Een kenmerk is verplicht van zodra het verplicht is in één van
+		de hiërarchische superklassen van de klasse, ook al is het voor
+		de klasse zelf als optioneel gemarkeerd.
+	\item[mayContain en systemMayContain] kenmerken bevatten de lijst met
+		kenmerken die optioneel zijn.
+	\item[rDNAttID] kenmerk bepaalt welk kenmerk van een klasse gebruikt
+		wordt om de RDN van objecten te bepalen. Meestal staat dit
+		kenmerk ingesteld op de waarde cn (common name).
+	\item[defaultSecurityDescriptor] kenmerk bepaalt de expliciete
+		machtigingen die gelden voor objecten van deze klasse. Dit kan
+		een eenvoudige oplossing bieden om het beheer van specifieke
+		objecten te delegeren.
+	\item[SystemOnly] als dit de waarde True heeft, kunnen de
+		structuurregels en de inhoudsregels van de klasse niet gewijzigd
+		worden.
+	\item[isDefunct] hiermee kunnen schema objecten gedeactiveerd
+		worden. Zo kunnen er geen nieuwe exemplaren van de klasse
+		aangemaakt worden. AD ondersteunt geen verwijdering van
+		schemaobjecten.
+\end{description}
+
+\subsection{Structuurregels}
+\begin{description}
+	\item[objectClassCategory] kenmerk heeft een integer waarde die de
+		categorie van de klasse bepaalt: structurele klasse (1),
+		abstracte klasse (0 of 2) of hulpklasse (3). Abstracte klassen
+		zijn gelijkaardig aan structurele klassen, maar kunnen zelf geen
+		objecten genereren.
+	\item[defaultObjectCategory] geeft de standaard objectCategory aan voor
+		de klasse.
+	\item[subClassOf] kenmerk bepaald de onmiddelijke superklasse van een
+		klasse.
+	\item[auciliaryClass en systemAuxiliaryClass] kenmerken bevatten alle
+		mogelijke hulpklassen waarvan deze klasse kenmerken kunnen
+		overnemen.
+	\item[possSuperiors en systemPossSuperiors] kenmerken van elk
+		classSchema object definieren de mogelijke hiërarchische
+		relaties tussen objecten van een klasse. Het feit of een klasse
+		containerobjecten representeert, wordt niet bepaald door een
+		kenmerk van de klasse zelf: een structurele klasse kan
+		containerobjecten genereren van zodra een andere structurele
+		klasse ernaar verwijst in zijn systemPossSuperiors of
+		PossSuperiors kenmerken. De definitie van een klasse bepaalt
+		voor zijn objecten bijgevolg niet van welke klasse het objecten
+		kan bevatten als containerobject, maar wel van welke klasse de
+		objecten als container kunnen optreden.
+\end{description}
+
+\section{Welke andere types objecten bevat het Active Directory schema, en wat
+is hun bedoeling?}
+
+\begin{description}
+	\item[attributeSchema objecten] zijn objecten waarmee een kenmerk wordt
+		ingesteld en waarmee beperkingen opgelegd worden aan objecten
+		die een exemplaar zijn van de klasse met dit kenmerk. Elk
+		kenmerk moet zo maar eenmaal gedefinieerd worden, maar kan toch
+		in meerdere klassen gebruikt worden.
+	\item[Abstracte schema] Naast classSchema en attributeSchema
+		objecten bevat het schema nog één ander object: een subSchema
+		object, het abstracte schema genoemd. Het heeft als RDN
+		Aggregate en bevat een alternatieve, compacte voorstelling van
+		het gehele schema. De bedoeling is om vereenvoudigde schema
+		gegevens ter beschikking te stellen aan LDAP cliënts, zonder
+		zich over veel implementatie details hoeven te bekommeren.
+		Gecombineerd met de Active Directory Service Interfaces (ADSI)
+		biedt het abstracte schema een toegang naar het schema, die veel
+		meer high-level is dan via het reële schema.
+\end{description}
+
+\section{Hoe en met welke middelen kan het Active Directory schema uitgebreid
+worden?}
+
+Uitbereidingen en wijzigingen van het schema zijn risicovol, gelden voor het
+hele forest en kunnen potentieel de hele infrastructuur onbruikbaar maken.
+Schema objecten worden daarom ook beveiligd met ACL's. Aanmaken van geheel
+nieuwe structurele klassen en wijzigen van attributen van bestaande klassen
+moeten zoveel mogelijk vermeden worden.
+
+Kleinschalige wijzigingen kunnen gebeuren met de Active Directory Schema
+snap-in. Een veilge manier om attributen aan een klasse toe te voegen: maak
+eerst de nodige attributeSchame objecten aan. Vervolgens wordt een nieuwe
+hulpklasse aangemaakt, waarin de lijst van optionele attributen wordt aangevuld
+met de nieuw aangemaakte attributen. Tenslotte wordt de nieuw aangemaakte
+hulpklasse geassocieerd met de klasse waaraan we de attributen wouden toevoegen.
+
+Grootschalige uitbereidingen gebeuren best met ldifde of programmatisch met ADSI
+interfaces. Met ldifde kunnen bestanden die geformatteerd zijn in LDAP Data
+Interchange Format worden toegepast op de directory. Om het schema aan te
+passen, stellen we alle nodige acties voor in het LDIF formaat. Het bestand
+wordt dan meegegeven aan ldifde -i -f.

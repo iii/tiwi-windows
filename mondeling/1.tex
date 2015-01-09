@@ -1,0 +1,192 @@
+\chapter{Structuur van Active Directory gegevens}
+
+\section{Bespreek de diverse namen die alle Active Directory objecten
+identificeren.}
+
+\begin{description}
+	\item[Relative Distinguished Name (RDN)] zorgt voor de unieke
+		identificatie binnen de container waar het object zich in
+		bevindt. bv \begrip{cn=beelzebub} is RDN van computer beelzebub.
+		De RDN wordt (meestal) opgeslagen in het kenmerk \begrip{cn} van
+		het object.
+	\item[Distinguished Name (DN)] is opgebouwd uit de RDN van het object
+		zelf en de RDNs van alle containerobjecten waarvan het object in
+		de hiërarchische indeling deel van uitmaakt. Dit zorgt voor een
+		unieke naamgeving voor elk object. Elk opeenvolgend deel van de
+		DN heeft de vorm \begrip{attribuut=waarde}, staat bekend als
+		\engels{attributed naming}. De delen worden gescheiden door een
+		komma. De DN naamgeving werkt van beneden (objectnaam) naar
+		boven (root van AD). bv
+		\begrip{cn=beelzebub,ou=iii,dc=hogent,dc=be}
+		De DN is belangrijk voor de werking van het LDAP protocol, bv
+		belangrijk bij het programmeren van scriptcode die AD
+		rechtstreeks aanspreekt. Een LDAP-cliënt kan query's op
+		willekeurige objecten uitvoeren door een LDAP URL te gebruiken
+		met de vorm \begrip{LDAP://server DNS naam/object DN}. De DN
+		wordt opgeslagen in het kenmerk \begrip{distinguishedName} van
+		het object.
+	\item[Canonical name] wordt op dezelfde manier samengesteld als de DN,
+		maar wordt op een eenvoudigere manier weergegeven:
+		\begrip{hogent.be/iii/beelsebub}. De meeste hulpmiddelen in
+		Active Directory tonen de canonieke naam, in plaats van de DN.
+		Het wordt opgeslagen in het kenmerk \begrip{canonicalName} van
+		het object. Dit is een geconstrueerd kenmerk.
+	\item[Globaal Uniek ID (GUID)] is een 128-bit getal dat niet kan
+		gewijzigd worden. Het wordt bepaald bij de creatie van het
+		object. Ook als het object verplaatst of gewijzigd wordt zal de
+		GUID niet veranderen. De GUID is beschikbaar voor verwijzing van
+		externe processen en programmeerfuncties. Het wordt opgeslagen
+		in het kenmerk \begrip{objectGUID} van het object.
+\end{description}
+
+\section{Wat zijn SPN objecten? Bespreek de aanvullende naamgeving voor deze
+objecten.}
+
+Security Principal Objects (SPN) zijn AD-objecten waaraan Security ID's (SID)
+zijn toegewezen. De SID wordt opgeslagen in het \begrip{objectSid} kenmerk.
+SPN objecten worden, na aanmelding op het netwerk, gebruikt voor het verlenen
+van toegang tot domeinbronnen. Ze zijn van toepassing op gebruikeraccounts,
+computeraccounts, groepen en domeinen. SIDs zijn uniek, ook in de tijd: nieuw
+aangemaakte accounts kunnen zo nooit de rechten krijgen van een oud account.
+
+SIDs worden meestal voorgesteld dooe een hiërarchische string getallen
+gescheiden door koppeltekens. bv \begrip{S-1-5-x-y-z-500} S-1-5 is de standaard
+prefix, bestaande uit een \engels{Revision Level} en een \engels{Authority
+Identifier}. X, y en z zijn 32-bit getallen specifiek voor het domein
+(\engels{Domain Subauthority Identifier}). 500 is een \engels{relative ID}
+(RID), dat nar het feitelijk object verwijst.
+
+Bij verplaatsing binnen hetzelfde domein blijft de SID ongewijzigd. Bij
+verplaatsing naar een ander domein zal de SID we veranderen. De GUID blijft
+altijd ongewijzigd. Om te vermijden dat een gebruiker hierna zijn toegang tot
+domeinbronnen zou verliezen worden alle vorige SIDs van het object bijgehouden
+in het \begrip{sIDHistory} kenmerk.
+
+\subsection{Aanvullende naamgeving voor gebruikersaccounts}
+
+De RDN, DN en canonieke naam zijn ongeschikt als aanmeldingsnaam omdat ze bij
+verplaatsing veranderen. SID en GUID zijn mits hun numerieke karakter ook niet
+geschikt hiervoor. Elke gebruikersaccount heeft ook een \engels{User Principal
+Name} (UPN), aka aanmeldingsnaam. Deze wordt bij het aanmaken van het account
+ingevoerd door de beheerder en opgeslagen in het \engels{userPrincipalName}
+kenmerk. Dit moet uniek zijn binnen het forest. UPN bestaat standaard uit de RDN
+van de gebruiker en de UPN suffix, gekoppeld met het @-teken.
+Voor de UPN suffix zijn er een aantal alternatieven:
+\begin{itemize}
+	\item Standaard wordt de DNS naam van het domein genomen
+	\item Dikwijlst kiest men voor de DNS naar van het root domein van het
+		forest
+	\item Kan ook een willekeurige alternatieve naam zijn, als deze op
+		voorhand geregistreerd is door een beheerder.
+\end{itemize}
+
+UPN is de meest geschikte aanmeldingsnaam maar wordt maar zelden gebruikt door
+compatibiliteit met vroegere NT versies. Meestal wordt als aanmeldingsnaam de
+NetBIOS naam van het domein en de SAM accountnaam van de gebruiker, gekoppeld
+met \textbackslash, genomen. De NetBIOS naam bestaat uit max 15 karakters, standaard de meest
+linkse component van de DNS naam. De SAM accountnaam bestaat uit max 20
+karakters, standaard de eerste 20 bytes van de RDN. NetBIOS naam moet uniek zijn
+in het forest, SAM accountnaam uniek in het domein en wordt opgeslagen in het
+\begrip{sAMAccountName} kenmerk
+
+\subsection{Aanvullende naamgeving voor computeraccounts}
+
+Elke computeraccount in AD heeft behalve zijn RDN, DN, canonieke naam, GUID en
+SID ook een SAM accountnaam (ook NetBIOS computernaam genoemd), een DNS hostnaam
+en een \engels{Service Principal Name} (SPN).
+SAM naam bestaat uit eerste 15 bytes van RDN, gevolgd door een \$, en wordt
+opgeslagen in het sAMAccountName kenmerk.
+De DNS hostname wordt opgeslagen in het dnsHostName kenmerk en bestaat
+standaard uit de eerste 15 tekens van de RDN en de suffix van de primaire DNS.
+De SPN is essentieel tijdens de wederzijdse verificatie van client software en
+de server die een bepaalde service biedt: de client zoekt een computeraccount op
+aan de hand van de SPN naam van de service waarmee hij een verbinding tot stand
+wil brengen. De SPN wordt bepaald door het multi-valued
+\engels{servicePrincipalName} kenmerk, oa samengesteld op basis van DNS naam en
+eventueel SRV records die naar het toestel verwijzen.
+
+\section{Enkele veel gebruikte klassen vertonen nog meer identificerende
+attributen voor hun instanties. Bespreek deze klassen en attributen}
+
+De klassen attributeSchema en classSchema zin twee veelgebruikte klassen waarvan
+de objecten terug te vinden zijn in de schema partitie. Deze objecten
+beschrijven alle objecten in de AD: classSchema objecten beschrijven de klassen
+waarvan objecten kunnen aangemaakt worden. De attributen die een klasse kan
+bevatten worden apart beschreven door attributeSchema objecten, zo kunnen
+meerdere klassen dezelfde kenmerk-definitie gebruiken.
+
+De objecten van deze klassen hebben een viervoudige naamgeving:
+\begin{description}
+	\item[Common name] is niets anders dan de RDN van het object in de
+		schema container.
+	\item[GUID] van het kenmerk kan automatisch gegenereerd worden bij
+		creatie van een nieuw kenmerk of kan op voorhand met guidgen
+		worden gegeneerd zodat dezelfde kenmerken in verschillende
+		forest dezelfde GUID kunnen krijgen.
+	\item[LDAP display name] wordt gebruikt voor programmatische toegang.
+	\item[Object identifier (OID)] dient voor interne representatie. Dit
+		zijn X.500 Object IDs die worden verleend door speciale
+		autoriteiten zoals ISO, en zijn gegarandeerd uniek in alle
+		netwerken over de hele wereld. Een bedrijk kan een eigen unieke
+		subtak toegewezen krijgen of kan gebruik maken van een unieke
+		subtak in een Microsoft subtak.
+\end{description}
+
+\section{In welke partities is de Active Directory informatie verdeeld? Geef de
+betekenis van elke partitie, hun onderlinge relatie, en de
+replicatiekarakteristieken erven.}
+
+De directory wordt enkel opgeslagen op domeincontrollers. Op elke
+domeincontroller wordt een kopie opgeslagen van de directory voor het domein
+waarin de controller zich bevindt. De informatie die in de directory is
+opgeslagen, is fysiek verdeeld in minimaal drie categorieën: \begrip{directory
+partities}
+\begin{description}
+	\item[Domaingegevens] bevatten de eigenlijke informatie over objecten in
+		het domein (zoals gedeelde bronnen, gebruiker- en
+		computeraccounts). Bij de installatie worden een aantal
+		standaard objecten geinstalleerd door het systeem, bv de
+		beheerderaccount. Wordt gedeeld per domein, dus er zijn evenveel
+		partities met domeingegevens als er domeinen zijn in het forest.
+		De domeingegevens worden niet gedistribueerd naar andere
+		domeinen. Er wordt we een subset van alle kenmerken van alle
+		domeinen bijgehouden in de globale catalogus.
+	\item[Configuratiegegevens] beschrijven de fysieke topologie van de
+		directory. Dit bevat onder andere een lijst van alle
+		domeinstructuren, de locaties van de domeincontrollers en de
+		global catalog controllers, de sites en de replicatietopologie.
+		De meeste gemeenschappelijke instellingen van het ganse forest
+		worden hierin opgeslagen, als kenmerken van objecten. De
+		configuratiegegevens gelden voor alle domeinen in het forest.
+	\item[Het schema] is de formele definitie van alle objecten en
+		kenmerkgegevens die kunnen opgeslagen worden in de directory.
+		Dit schema is uniek voor alle domeinen in het forest.
+	\item[Applicatiepartities] dit is een 4e vorm van partities die vanaf
+		Windows server 2003 kan aangemaakt worden. Een deel van de AD
+		gegevens kan in één of meerdere gescheiden applicatiepartities
+		worden ondergebracht, dit is interessant voor dynamische
+		objecten. Ze kunnen geen SPN objecten bevatten.  Objecten binnen
+		de applicatie partitie kunnen niet verplaatst worden buiten de
+		partitie. bv voor DNS is er een aparte applicatiepartitie.
+\end{description}
+
+Het schema en de configuratiegegevens zijn containerobjecten in het root domein
+van het forest. Ook de eventuele applicatiepartities vormen containerobjecten
+ten opzichte van de overeenkomstige domeingegevens. Dit is een logische
+structurering, fysische bestaat het wel uit meerdere bestanden.
+
+AD servers wisselen continu gegevens uit. Elke partitie in de directory vormt
+een aparte eenheid voor replicatie, waarbij telkens een specifieke groep
+controllers hoort. Het schema en configuratiegegevens worden gerepliceerd naar
+alle domeincontrollers in het forest. De domeingegevens worden logischerwijs
+binnen het domein gerepliceerd. Applicatiepartities worden gerepliceerd tussen
+een eigen deelverzameling specifiek hiervoor geconfigureerde domeincontrollers
+van het forest. DNS partities kunnen zo bv enkel naar DNS nameservers
+gerepliceerd worden.
+
+De koppeling tussen een partitie en zijn replicerende domeincontrollers wordt
+bijgehouden in het \begrip{msDS-NC-Replica-Locations} kenmerk van het
+overeenkomstige crossref object in de configuratiegegevens.
+
+Een subset van de kenmerken van alle objecten in de domeingegevens van elk
+domein in het forest worden gerepliceerd naar de globale catalogus.

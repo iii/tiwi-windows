@@ -1,0 +1,123 @@
+\chapter{Active Directory replicatie}
+
+\section{Wat is de bedoeling van replicatie?}
+
+Gebruikers en services moeten op elk gewenst moment vanaf elke computer in het
+forest toegang kunnen krijgen tot de directory gegevens. Een domein zonder
+actieve domeincontroller functioneert niet langer naar gebruikers toe. Doordat
+in één domein met meerdere domeincontrollers kan gewerkt worden, kan men de
+fouttolerantie en de belastingsverdeling verbeteren. Bij aanpassingen (CRUD) aan
+de AD gegevens moeten deze aanpassingen doorgegeven worden aan andere
+domeincontrollers.
+
+AD omvat een replicatieservice waarmee directory gegevens gedistribueerd worden
+in het netwerk. Alle domeincontrollers in een domein nemen deel aan de
+replicatie en bevatten een volledige kopie van alle directory gegevens voor het
+eigen domein. Analoog beschikken alle domeincontrollers in een forest over het
+directory schema en de configuratiegegevens, en wordt deze informatie
+gedistribueerd doorheen het hele forest. De replicatieservice zorgt ervoor dat
+directory gegevens altijd actueel zijn. Behalve voor wat de operations master
+functies betreft, zijn alle Windows Server domeincontrollers in een domein dan
+ook equivalent.
+
+\section{Hoe wordt dit in Windows Server (ondermeer te opzichte van NT4)
+gerealiseerd: Bespreek de verschillende technische kenmerken en concepten van
+Windows Server replicatie, en hoe men specifieke problemen vermijdt en oplost.}
+
+In AD wordt multi-master replicatie gebruikt, zodat de directory kan bijgewerkt
+worden vanaf elke domeincontroller. Dit is een evolutie van het in NT4 gebruikte
+master-slave model met primaire domeincontrollers en back-up controllers.
+
+Het is belangrijk om ervoor te zorgen dat het replicatie verkeer relatief
+beperkt blijft. In AD worden daarom alleen gewijzigde directory gegevens
+gerepliceerd. Om ervoor te zorgen dat een specifieke wijziging niet meerdere
+malen naar dezelfde domeincontroller wordt gerepliceerd, wordt er gebruik
+gemaakt van een 64-bits Update Sequence Number (USN). Samen met het GUID van een
+domeincontroller wordt dit de Up-to-Dateness Vector (UTD vector) genoemd. Elke
+domeincontroller houdt in een tabel bij wat de meest recente UTD vector is die
+hij van elke andere controller ontvangen heeft. Dit uitwisselingsprotocol is op
+te volgen voor elke individuele partitie met behulp van de repadmin opdracht.
+
+De metadata van elk object houdt van elk kenmerk ondermeer een Property Version
+Number (PVN) bij, samen met de corresponderende UTD vector (van de
+domeincontroller die de wijziging uitgevoerd heeft, op het ogenblik van de
+wijziging). Op basis van de UTD vectortabel kan een controller alle wijzigingen
+met een bepaalde minimale USN aan een andere controller opvragen. Aan de hand
+van de metadata kan deze controller precies te weten komen welke wijzigingen hij
+moet opsturen.
+
+Met het multi-master model is het mogelijk dat hetzelfde kenmerk op meer dan één
+domeincontroller tegelijkertijd gewijzigd wordt. Dit wordt opgelost door de
+wijziging op het oudste tijdstip te negeren. Bij exact dezelfde tijd wordt de
+wijziging van de domeincontroller met het hoogste GUID geaccepteerd. Voor
+sommige objecten (schema objecten) is dit niet goed genoeg en kunnen verzoeken
+tot wijzigingen enkel door 1 specifieke domeincontroller verwerkt worden.
+
+Verwijdering van objecten biedt een bijkomend probleem: men moet vermijden dat
+het object opnieuw gecreëerd wordt door replicatie vanuit een andere
+domeincontroller. Een object wordt hiervoor niet onmiddelijk uit AD verwijderd,
+maar als tombstone object gemarkeerd, en in een hidden container (Deleted items)
+geplaatst. Pas echt verwijderd na tombstoneLifeTime (default 60 of 180) dagen.
+
+Nog een belangrijk verschil met NT4 is de \begrip{store-and-forward} replicatie:
+elke verandering op een specifieke controller wordt slechts uitgewisseld met
+enkele andere domeincontrollers, die op hun beurt de wijzigingen communiceren
+met nog enkele andere domeincontrollers. De gebruikte replicatietopologie wordt
+automatisch gegenereerd door de Knowledge Consistency Checker (KCC) software op
+elke AD domeincontroller. Via de hierbij aangemaakte verbindingsobjecten zoekt
+AD zelf de meest optimale manier om het repliceren zo snel mogelijk uit te
+voeren. Er worden hierbij individuele topologieën gecreëerd voor de
+domeingegevens enerzijds, en voor de schema en configuratiegegevens anderzijds.
+Ook voor elke applicatiepartitie is er een aparte replicatietopologie.
+
+Windows Server replicatie is een pull, en geen push mechanisme. De
+domeincontrollers brengen elkaar wel op de hoogte van de wijzigingen, maar het
+opvragen gebeurt op iniatief van de replicatiepartner. Wijzigingen worden ook
+opgespaard in tijdsintervallen van standaard vijf minuten en pas daarna
+verstuurd. Dit wordt propagation damping genoemd en wordt uitgeschakeld voor
+objecten die met beveiliging te maken hebben. Automatisch om het uur polling als
+er geen meldingen van een domeincontroller zijn gekomen.
+
+Windows Server replicatie is multi-threaded: een domeincontroller kan simultaan
+repliceren met diverse partners. Een laatste verschil met NT4 is de kleinste
+replicatie entiteit: in NT4 was dit een volledig object, in windows 2000
+domein functioneel niveau is dit een heel attribuut en vanaf windows server 2003
+functioneel niveau is de atomaire waarde van een attribuut (1 veld in
+multi-valued attribuut).
+
+\section{Welke toestellen repliceren onderling in een forest? Welke
+specifieke gegevens worden hierbij uitgewisseld}
+
+Domeincontrollers in een domein repliceren de domeingegevens van dat domein met
+elkaar. Naar elke Global Catalog wordt een subset van de domeingegevens van elk
+domein gerepliceerd. Het schema en configuratiegegevens worden gerepliceerd naar
+alle domeincontrollers in het forest.
+
+\section{Welke impact hebben sites met betrekking tot de replicatie van Active
+Directory gegevens? Je hoeft het begrip site op zich niet verder te behandelen.}
+
+Tussen sites is er automatisch en continu replicatie. Het is de bedoeling een
+evenwicht te vinden tussen enerzijds behoufte aan actuele directory gegevens en
+anderzijds beperkingen die door beschikbare netwerk bandbreedte opgelegd worden.
+
+Inter-site replicata vertoont heel wat implementatie verschillen met intra-site
+replicatie:
+\begin{itemize}
+	\item Enkel polling, urgent replication is bijgevolg niet mogelijk.
+	\item Standaard compressie, kan uitgeschakeld worden, reduceert volume
+		tot 40%
+	\item Met behulp van sitekoppelingen aan te geven hoe verschillende
+		sites onderling, met rechtstreekse fysieke netwerkverbindingen,
+		verbonden zijn.
+		\begin{itemize}
+			\item KCCs genereren automatisch enkel
+				verbindignsobjecten tussen sites als er tussen
+				beide sites een sitekoppeling bestaat.
+			\item Fouttolerantie: AD houdt zoveel mogelijk rekening
+				met meerdere routes tussen sites om wijzigingen
+				te repliceren.
+			\item Alternatieve sitekoppeling maken de replicatie
+				betrouwbaarder, als backup voor een falende
+				sitekoppeling/verbinding.
+		\end{itemize}
+\end{itemize}

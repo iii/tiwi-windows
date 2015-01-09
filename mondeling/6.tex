@@ -1,0 +1,141 @@
+\chapter{Active Directory server rollen}
+
+Welke vragen moet men zich stellen na de initiële installatie van een Windows
+Server toestel, in veband met bijzondere functies die de server kan vervullen
+met betrekking tot Active Directory? Formuleer bij het beantwoorden van deze
+vragen telkens (voor zover relevant):
+\begin{itemize}
+	\item Hoe bepaald wordt welke servers een dergelijke specifieke functie
+		vervullen?  Hoeveel zijn er nodig (in termen van:
+		minimaal/exact/maximaal aantal, in functie van ...), en waarom?
+	\item Eigenschappen zoals bedoeling, noodzaak, kriticiteit, inhoud,
+		synchronisatie, voor welke Windows versie(s) van toepassing,...?
+	\item De eventuele relatie tussen de diverse functies. Vermeld
+		bijvoorbeeld welke functies al dan niet door dezelfde server
+		kunnen vervuld worden, of misschien juist wel door dezelfde
+		server moeten vervuld worden.
+	\item Op welke diverse manieren men de toewijzing van elke bijzondere
+		functie kan instellen, wijzigen en/of ongedaan maken?
+\end{itemize}
+
+\section{Wordt server al dan niet opgenomen in een domein?}
+
+Als een Windows Server toestel lid is van een werkgroep, niet van een domein,
+dan wordt het een zelfstandige server genoemd. Deze profiteren niet van de
+voordelen die AD biedt. Vooral indien er reeds een AD domeinstructuur aanwezig
+is, is de keuze snel gemaakt.
+
+\section{Vervult de in een domein opgenomen server al dan niet de functie van
+domeincontroller?}
+
+Een in een domein opgenomen server die de functie van domeincontroller niet
+vervult, wordt een lidserver (member server) genoemd. Meestal fungeren
+lidservers als file servers, toepassingsservers, database servers, web servers,
+firewalls, routers of een combinatie hiervan. In Windows Server 2008+ worden
+dergelijke functies gegroepeerd op drie niveau's:
+\begin{description}
+	\item[Server rollen] (DNS, DHCP, ...) en Web Server implementeren
+		primaire serverfuncties.
+	\item[Role services] optionele, meer complexe, server rollern.
+	\item[Features] (Powershell, SNMP, backup, ...) zorgen voor meer
+		ondersteunende functies.
+\end{description}
+Men kan aanvullende server rollen, rol services en features configureren via
+respectievelijk de Add Roles, Add Role Services en Add Features wizards van
+Server Manager. Dit kan ook met de ServerManagerCmd opdracht.
+
+Zowel voor lidservers als voor domeincontrollers gelden groepsbeleidinstellingen
+die gedefinieerd zijn voor het domein, de OUs of de site. Lidserver behouden, in
+tegestelling tot domeincontrollers, een eigen lokale beveiligingsdatabank, de
+Security Account Manager (SAM).
+Doorgaans configureert men slechts een fractie van de Windows Server toestellen
+als domeincontroller. Minimaal 1 per domein.
+
+\section{Indien gekozen wordt voor domeincontroller, moet ook de functie van
+globale catalogus ondersteund worden?}
+
+Indien er slechts een domein in het forest is, mogen alle domeincontrollers tot
+global catalog server worden gepromoveerd. Om het replicatieverkeer te beperken,
+zorgt me er best voor dat er steeds een global catalog server per site aanwezig
+is. De promotie gebeurt door de global catalog optie aan tevinken in de general
+tabpagina van de properties van de NSDS settings van een domeincontroller. Dit
+is terug te vinden in de AD sites and services snap-in. De global catalog server
+heeft een kopie van alle objecten van de domeingegevens van het domein waarin de
+global catalog server zich bevindt, en een kopie van een subset van de
+eigenschappen van alle objecten van het gehele forest. Deze subset wordt enkel
+gerepliceerd tussen GC servers. Verder bevat de GC nog een kopie van de
+configuratiegegevens van alle domeinen in het forest, en het unieke schema van
+het forest. Eventueel worden ook nog specifieke applicatiepartities bijgehouden
+in de global catalog.
+
+\section{Welke domain controllers worden als RODC ingesteld?}
+
+Domeincontrollers configureren als Read Only Domain Controller is goede praktijk
+als de fysieke beveiliging van het toestel niet kan worden gegarandeerd, of waar
+specifieke interactieve toepassingen enkel op een DC kunnen worden uitgevoerd.
+Een bijkomend voordeel is dat het replicatieverkeer in één enkele richting
+wordt beperkt. Er kan ook nog configuratie van een filtered attribute set (welke
+kenmerken worden gerepliceerd, en welke niet) en een password replication policy
+worden geconfigureerd met credential caching voor specifieke gebruikers en
+computers. RODC's kunnen tevens de rol van GC en DNS server vervullen. In het
+geval van DNS gaat het over een ordinaire secundaire nameserver. Een RODC biedt
+ook ondersteuning voor de operations masters rollen. Er geldt wel de beperking
+dat een RODC enkel met Windows Server 2008 DC's gegevens kan repliceren.
+
+\section{Welke domeincontrollers vervullen de operations master rollen?}
+
+Een aantal specifieke AD functies kunnen slechts door één enkele controller in
+het domein of in het forest vervuld worden.
+
+\subsection{Rollen uniek in elk domein}
+\begin{description}
+	\item[RID master] In domeinen met minimaal Windows 2000 native
+		functioneel niveau wijst de RID master reeksen relatieve IDs
+		toe aan alle domeincontrollers in het domein. Hiermee kunnen de
+		domeincontrollers zelfstandig SPN objecten met een SID
+		aanmaaken. Wanneer een domeincontroller 80\% van zijn RID pool
+		heeft opgebruikt, vraagt hij een nieuwe reeks aan bij de RID
+		master.
+		Een object tussen domeinen verplaatsen moet gebeuren vanop de
+		RID master van het domein dat het object bevat.
+	\item[PDC emulator master] In een Windows 2000 mixed domein met NT4
+		back-up domeincontrollers fungeert de PDC emulator master als
+		een volledige emulatie van een NT4 primaire domeincontroller.
+		NT4 domeinen kunnen hierdoor services blijven verlenen zonder te
+		weten dat hun PDC in feite door AD vervangen is. De PDC emulator
+		master verwerkt wachtwoordwijzigingen van cliënts en repliceert
+		bijgewerkte gegevens naar de NT4 back-up domeincontrollers. Hij
+		krijgt ook een voorkeursbehandeling bij de replicatie van
+		wachtwoordwijzigingen, uitgevoerd door andere domeincontrollers
+		in het domein.
+		De PDC emulator master fungeert ook als primaire bron van
+		tijdssynchronisatie. Best RID master en PDC emulator master
+		laten vervullen door dezelfde domeincontroller. Het verlies van
+		de PDC emulator heeft gevolgen voor netwerkgebruikers.
+	\item[infrastructure master] is verantwoordelijk voor het bijwerken van
+		verwijzingen vanuit objecten in het eigen domein naar objecten
+		in andere domeinen. De infrastructure master van een domein
+		vergelijkt continu de kenmerken van zijn phantom objecten met de
+		kenmerken van de corresponderende objecten in externe domeinen,
+		en de kenmerken van phantom objecten in externe domeinen die
+		dooverwijzen naar eigen objecten met de kenmerken van deze
+		objecten. Hij doet hiervoor een beroep op de global catalog.
+		Omdat domeincontrollers die global catalog zijn geen phantom
+		objecten aanmaken, doordat ze reeds beschikken over een kopie
+		van de objecten van andere domeinen, moet de rol van
+		infrastructure master vervuld worden door een domeincontroller
+		die geen global catalog is.
+\end{description}
+
+\subsection{Rollen uniek in het forest}
+\begin{description}
+	\item[schema master] beheert alle gewijzigde gegevens voor het schema.
+		Als je het schema van een forest wil bijwerken, dan moet je dit
+		doen via de schema master. Dit om conflicterende wijzigingen in
+		het schema te vermijden.
+	\item[domain naming master] beheert het toevoegen en verwijderen van
+		domeinen en applicatiepartities in het forest. Het is de enige
+		domeincontroller die de partitions container van de configuratie
+		gegevens kan wijzigen. Het moet een global catalog controller
+		zijn.
+\end{description}

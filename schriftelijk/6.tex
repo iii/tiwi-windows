@@ -1,0 +1,125 @@
+\chapter{Configuratie van gebruikersgroepen}
+
+\section{Waar en hoe wordt het (volledige) lidmaatschap van een object tot een
+groep bijgehouden? Op welke diverse manieren kan men dit lidmaatschap
+configureren? Op welke diverse manieren kan men de volledige verzameling van
+objecten, die er deel van uitmaken, achterhalen?}
+
+In het properties venster van een gebruikersaccount kan men in het Member Of
+tabblad lidmaatschap tot groepen configureren. Het memberOf attribuut dat
+hiervoor gebruikt wordt, is gelinkt aan het member attribuut van de groep en is
+hier de back-link. Het kan dus niet rechtstreeks gewijzigd worden, dit kan enkel
+via het member attribuut van de groep.
+
+In het properties venster van een groep kan men in het tabblad Members de groep
+bevolken. In het Member Of tabblad kan men de groep zelf deel laten uitmaken van
+een andere groep. De lijst van members wordt dus steeds opgeslagen in een
+link-kenmerk met in de groep de forward-link members. En in het object dat deel
+uitmaakt van de groep de back-link memberOf. Doordat memberOf een back-link
+kenmerk is kan het niet rechtstreeks gewijzigd worden.
+
+Groepsleden kunnen ook uit trusted domeinen geselecteerd worden. AD maakt
+hiervoor een phantom object aan, dat het object uit het vertrouwde domein
+vertegenwoordigt. Deze mapobjecten komen terecht in de container
+ForeignSecurityPrincipals, en kunnen lid worden van lokale groepen in het
+domein.
+
+Uiteraard zijn de groepen ook te beheren via de Command Prompt door middel van
+de opdrachten: net group, net localgroup, dsadd group, dsrm group, dsget group
+en dsmod group.
+
+De verzameling objecten die tot een groep behoren kan men verkrijgen met:
+\begin{itemize}
+	\item Door met het commando dsget group het attribuut members op te
+		vragen van een groep.
+	\item In het Members tabblad van de properties van de groep.
+	\item Met behulp van een LDAP query.
+\end{itemize}
+
+\section{Door wie wordt het lidmaatschap van de diverse groepen bij voorkeur
+ingesteld?}
+
+Dit kan best door de beheerder gebeuren. Lidmaadschap bij een groep kan bepaalde
+machtigingen met zich meebrengen en het is de taak van de beheerder om ervoor te
+zorgen dat gebruikers niet meer rechten hebben dan dat ze nodig hebben.
+
+In grote organisaties kan een deel van de beheerstaken gedelegeerd worden naar
+andere personen. Zij zullen dan bv rechten hebben om een bepaalde subtak of OU
+te beheren.
+
+Bij subscriptiegroepen kunnen gebruikers zich zelf in en uitschrijven.
+
+\section{Op welke diverse manieren kan men het beheer van van Active Directory
+objecten, specifieke attributen van groepsobjecten in het bijzonder, delegeren
+aan niet-administrators? Bespreek een aantal technieken om dit delegeren zo
+eenvoudig mogelijk uit te voeren.}
+
+Men kan in AD de beheerstaken van een OU delegeren aan een groep gebruikers.
+Hiervoor moet men de ACLs van de OU instellen. Dit kan op drie manieren:
+\begin{itemize}
+	\item Via de Delegation of Control Wizard
+	\item Via de properties van de OU
+	\item Via de Command Prompt
+\end{itemize}
+
+\subsection{Delegation of Control Wizard}
+
+Om de wizard op te starten klik je in dsa.msc met de rechtmuisknop op een OU en
+selecteer je Delegate Control. Je selecteert de groepen of gebruikers waaraan je
+beheersmachtigingen wil delegeren. Deze hoeven geen deel uit te maken van de
+groep zelf. Het volgende dialoogvenster toont een lijst met de meest voorkomende
+beheertaken die voor delegeren in aanmerking komen. Met create a custom task to
+delegate kan je zelf een gedetailleerde keuze maken tussen alle beschikbare
+delegeeropties. Het laatste dialoog venster toont ter bevestiging een overzicht
+van de geselecteerde instellingen.
+
+\subsection{OU properties}
+
+Rechterklik op de OU, dan properties en naar het security tabblad gaan. Daar kan
+je zowel taken delegeren als de instellingen voor reeds gedelegeerde taken
+wijzigen. De lijst van molucaire machtigingen waaruit je kan kiezen is
+afhankelijk van de objectklasse.
+
+\subsection{Command Prompt}
+
+Met de acldiag en dsacls opdrachten. Terug intrekken kan met dsrevoke.
+
+\section{Aan welke groepen/entiteiten worden rechten in de praktijk toegekend?
+Bespreek de bijzonderheden van dergelijke groepen/entiteiten, en vermeld er de
+meest interessante voorbeelden van (telkens met hun bedoeling en hun
+randeffecten).}
+
+Rechten kunnen afzonderlijk aan een individuele gebruiker toegekend worden, maar
+voor het organiseren van de beveiliging is het beter de gebruiker in een groep
+te plaatsen, en te definieren welke rechten aan de groep toegekend worden.
+Verschillende praktische groepen zijn oa:
+
+\begin{description}
+	\item[Backup Operators] hebben de bevoegdheid om bestanden en mappen te
+		back-uppen en terug te plaatsen, zelfs als ze geen toestemming
+		hebben om deze bestanden te lezen of te wijzigen.
+	\item[Account Operator] maken en beheren gebruikersaccounts en groepen,
+		en kunnen computers aan het domein toevoegen.
+	\item[Server Operators] kunnen onder andere het systeem vanop afstand
+		uitzetten, de systeemtijd veranderen, de harde schijf
+		formatteren en mappen delen.
+	\item[Print Operators] kunnen printers delen, wissen en beheren.
+	\item[Administrators] hebben bijna elk recht. Toch krijgen beheerders
+		met de ruime bevoegdheden van deze groep geen toegang tot alle
+		bestanden en mappen.
+	\item[User] kunnen programmas gebruiken, maar ze niet installeren.
+\end{description}
+
+AD kent ook impliciete groepen, deze hebben geen specifiek lidmaatschap en
+kunnen op verschillende tijdstippen verschillende gebruikers vertegenwoordigen.
+Enkele voorbeelden:
+\begin{description}
+	\item[Interactive] iedereen die de computer lokaal gebruikt.
+	\item[Network] alle gebruikers die via het netwerk zijn verbonden met
+		een computer.
+	\item[Everyone] combinatie van de Interactive en Network groepen.
+	\item[Authenticated Users] alle gebruikers die geauthentificeerd zijn.
+	\item[System] het besturingssysteem, heeft bijna alle bevoegdheden.
+		Processen van het OS hebben deze rechten nodig om te kunnen
+		draaien.
+\end{description}

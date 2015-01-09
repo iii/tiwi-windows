@@ -1,0 +1,115 @@
+\chapter{Active Directory sites}
+
+\section{Welke rol vervullen sites? Welke Active Directory aspecten worden
+erdoor beïnvloed? Bespreek hoe deze aspecten anders gerealiseerd worden indien
+de toestellen zich al dan niet in verschillende sites bevinden. (ondermeer
+verschil tussen intrasite en intersite replicatie)}
+
+Het repliceren tussen domeincontrollers kan veel bandbreedte opslorpen. In een
+LAN omgeving is dit niet direct een groot probleem, maar in WAN omgevingen moet
+er wel de nodige aandacht aan besteed worden. De oplossing hiervoor in Windows
+Server is het gebruik van sites.
+
+Sites komen overeen met fysieke locaties: een verzameling subnetwerken die
+onderling aan LAN snelheden met elkaar kunnen communiceren. Zoals domeinen en
+OUs zorgen voor een logische opsplitsing van het internetwerk, zorgen sites voor
+een fysieke structurering van het netwerk. Logische en fysieke structuren zijn
+onafhankelijk van elkaar.
+
+Het gebruik van sites heeft niet enkel voordelen bij replicatie. Voor een vlotte
+werking van AD is het belangrijk dat er een domeincontroller zo dicht mogelijk
+bij de gebruikers geplaatst wordt. Sites maken het mogelijk om bij AD
+raadplegingen eerst op zoek te gaan naar domeincontrollers die zich in dezelfde
+site bevinden als de client.
+
+Binnen een site worden directory gegevens continu en automatisch gerepliceerd.
+Tussen sites moet er een evenwicht gevonden worden tussen enerzijds de behoefte
+aan actuele directory gegevens en anderzijds de bandbreedte beperkingen.
+Inter-site replicatie vertoont dan ook heel wat implementatie verschillen met
+intra-site replicatie:
+\begin{itemize}
+	\item Het meldingsmechanisme wordt standaard achterwege gelaten, er
+		wordt enkel gebruik gemaakt van polling. Urgent replication is
+		dan ook niet mogelijk. Standaard polling om de 3 uur.
+	\item Gegevensuitwisseling wordt standaard gecomprimeerd. Reduceert
+		volume tot 40%.
+	\item Beheerders kunnen met behulp van sitekoppelingen aangeven hoe de
+		verschillende sites onderling, met rechtstreekse fysieke
+		netwerkverbindingen, verbonden zijn. De KCC's genereren
+		automatisch enkel verbindingsobjecten tussen sites als er tussen
+		beide sites een sitekoppeling bestaan. Een site zonder
+		sitekoppelingen is zinloos, want er worden dan geen
+		verbindingsobjecten aangemaakt.
+\end{itemize}
+
+Om meerdere verbindingsobjecten te vermijden die dezelfde sitekoppeling
+gebruiken, wordt er automatisch (grootste GUID) per site een Inter-site Topology
+Generator (ISTG) ingesteld. Enkel de KCC's van de ISTGs gebruiken de informatie
+in de sitekoppelingen om verbindingsobjecten tussen controllers van
+verschillende sites te genereren. De domeincontrollers die van dit uniek
+verbindingsobject gebruik maken, worden bruggenhoofd (bridgehead) servers
+genoemd. Een bruggenhoofd server is het punt waar directory gegevens tussen
+sites uitgewisseld worden. Door de invoer van ISTGs en bridgehead servers wordt
+ervoor gezorgd dat KCCs zich optimaal aanpassen aan de siteconfiguratie.
+
+\section{Welke relaties bestaan er tussen sites, domeinen, domeincontrollers en
+golbal catalogs? Druk deze relaties ondermeer uit in termen zoals ... een X
+vereist minimaarl/exact/maximaarl Ys.... Geef een verantwoording voor elk van
+deze beweringen.}
+
+Er is geen enkel verband nodig tussen sites en domeinen. Meerdere sites in 1
+domein of meerdere domeinen in 1 site zijn mogelijk.
+
+Sites zijn enkel zinvol indien er minstens één domeincontroller in
+geconfigureerd is. Als alle domeincontrollers in een site tijdelijk
+onbeschikbaar zouden zijn, wordt dynamisch de dichstbijzijnde domeincontroller
+van een andere site toegewezen (site covering). Alle domeincontrollers in een
+site mogen RODCs zijn, Windows Server 2003 past dan wel automatisch site
+covering toe, maar kan uitgeschakeld worden in het register van die controller.
+
+Omdat het voor verificatie van gebruikers in een AD domein steeds nodig is om
+vooraf een global catalog gecontacteerd te hebben, doet men er best aan om in
+elke site van ten minste één domeincontroller ook een global catalog te maken.
+Indien het forest slechts uit één domein bestaat, is er geen enkel bezwaar om
+van alle domeincontrollers een global catalogus te maken. Dankzij caching kan
+het inlogproces van een gebruiker afgewerkt worden, zonder een global catalogus
+te contacteren. Hiervoor moet het forest minimaal op Windows Server 2003 forest
+functioneel niveau staan.
+
+\section{Hoe wordt bepaald tot welke site computers behoren?}
+
+Voor werkposten wordt dit dynamisch bepaalt, telkens de IP software van een
+werkpost wordt opgestart, bepaalt de werkpost via het netwerkadres in welke site
+het zich bevindt.
+
+De site locatie van een domeincontroller wordt daarentegen bepaald door de vraag
+tot welke site in de directory het server object van de domeincontroller
+behoort. Elke site heeft een container met de naam Servers, die alle
+domeincontroller objecten bevatten die in deze site zijn geplaatst. Tijdens de
+promotie van server tot domeincontroller wordt de server automatisch toegevoegd
+aan de site waaraan het subnet, waartoe de server behoort, is gekoppeld. Er is
+ook een Default-First-Site container voor als het subnet niet tot een bestaande
+site behoort.
+
+\section{Bespreek de diverse noodzakelijke instellingen om de verschillende
+aspecten van sites te configureren, en vermeld hierbij telkens: waar en in welke
+gegroepeerde vorm ze opgeslagen worden, waarom ze noodzakelijk zijn (ondermeer
+welke andere aspecten er afhankelijk van zijn)}
+
+De meeste informatie in verband met sites wordt in Active Directory zelf
+bijgehouden, in de Sites container van de configuratiegegevens. Enkele default
+instellingen van KCC en van het replicatie mechanisme worden echter, afhankelijk
+van de Windows Server versie, niet in AD bewaard, maar in het register van elke
+individuele domeincontroller.
+
+Alle wijzigbare parameters staan gegroepeerd in de Parameters subtak van de NTDS
+service. Zo houdt de parameter Repl topology update period (secs) de periode bij
+van het KCC proces, en Replicator notify pause after modify (secs) de
+latentieperiode voor propagation damping bij intra-site replicatie.
+
+Meer elementaire configuratiebewerkingen met sites kunnen via de MMC snap-in:
+Active Directory Sites and Services. Deze wordt aangeboden in de standaard
+console sssite.msc. Wordt gebruikt om sites te creëren en om servers naar een
+andere site te verplaatsen. Ook kan met behulp van site koppelingen worden
+aangegeven hoe de verschillende sites onderling verbonden zijn. Welke protocol,
+het (gebruiks)schema, de bandbreedte en de frequentie kan hier ingesteld worden.
