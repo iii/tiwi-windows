@@ -55,7 +55,7 @@ die alle vier uniek en gestandaardiseerd zijn:
 		worden door alle streepjes te verwijderen, en de eerste letter
 		niet in hoofdletters te vermelden. Opgeslagen in een kenmerk van
 		het attributeSchema object met als LDAP display naam
-		\begrip{IDAPDisplayName}.
+		\begrip{lDAPDisplayName}.
 	\item[Object identifier (OID)] die geldt als interne representatie.
 		X.500 IDs worden verleend door speciale autoriteiten, en zijn
 		gegarandeerd uniek in alle netwerken wereldwijd. Het is een
@@ -101,7 +101,7 @@ die ingesteld kunnen worden.}
 				container.
 			\item Het zetten van de derde laagste bit laat ambiguous
 				name resolution (ANR) toe. Bij opzoekingen waar
-				men zoek gaat naar objecten waarbij minstens één
+				men op zoek gaat naar objecten waarbij minstens één
 				kenmerk uit een verzameling kenmerken een
 				specifieke waarde aanneemt. Bv voor displayName,
 				givenName \& name staat de ANR bit op 1.
@@ -130,11 +130,11 @@ die ingesteld kunnen worden.}
 		ander object, dan wordt het back-link kenmerk van dat object
 		automatisch in- of aangevuld met de DN van het eerste object, en
 		vice versa. Gebruikers met voldoende machtigingen kunnen enkel
-		de waarde van forwart-link kenmerken rechtstreeks wijzigen.
+		de waarde van forward-link kenmerken rechtstreeks wijzigen.
 		Back-link kenmerken vallen volledig onder het beheer van de
 		security accounts manager component van windows server. De
 		forward-link kenmerken hebben een even waarde, de backward-link
-		kenmerken hebben een onevenwaarde, 1 hoger dan de forward-link
+		kenmerken hebben een oneven waarde, 1 hoger dan de forward-link
 		waarde.
 \end{description}
 
@@ -147,7 +147,7 @@ is hun bedoeling?}
 		van classSchema objecten definieren de klasse, en bevatten twee
 		soorten regels: structuurregels definieren de hiërarchische
 		relaties tussen hetzij klassen, hetzij tussen objecten,
-		inhoudsregels kenmerken definiëren die beschikbaar zijn voro een
+		inhoudsregels kenmerken definiëren die beschikbaar zijn voor een
 		exemplaar van die klasse.
 	\item[Abstracte schema] Naast classSchema en attributeSchema
 		objecten bevat het schema nog één ander object: een subSchema

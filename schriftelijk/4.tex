@@ -1,7 +1,7 @@
 \chapter{Machtigingen op bestandstoegang}
 
 \section{Welke rol spelen machtigingen bij de beveiliging van bronnen? Geef een
-gedetaileerd algemeen overzciht van het mechanisme van machtigingen.}
+gedetaileerd algemeen overzicht van het mechanisme van machtigingen.}
 
 Met machtigingen bepaal je wie toegang heeft tot welke gegevens, en wat die er
 mee kan doen. Elk object in AD, elk object van een NTFS volume, elke
@@ -12,7 +12,7 @@ Deze bevat ondermeer:
 	\item De System Access Control List (SACL) definieert welke acties van
 		de gebruiker gelogd worden.
 	\item De SID van de eigenaar van het object. Makers van objecten zijn
-		standaard egenaar, maar de eigendom kan worden overgedragen. De
+		standaard eigenaar, maar de eigendom kan worden overgedragen. De
 		eigenaar of beheerder is verantwoordelijk voor het instellen van
 		de ACL.
 	\item De primaire group van de maker, enkel van belang voor POSIX
@@ -31,7 +31,7 @@ zo veel mogelijk op groepen toegepast om beheer te vereenvoudigen.
 ACEs worden in canonieke volgorde verwerkt. Eerst komen de ACEs die machtigingen
 ontzeggen aan de beurt, daarna degene die toekennen. Ontzeggen is steeds het
 sterkste kenmerk, een toekenning van een machtiging wordt genegeerd als die
-eerder ontzegt werd. Afwijken van deze volgorde kan enkel programmatorisch.
+eerder ontzegd werd. Afwijken van deze volgorde kan enkel programmatorisch.
 
 Machtigingen zijn cumulatief. De machtigingen van een groep worden op zijn leden
 toegepast, tenzijn die machtiging elders (op de specifieke gebruiker of een
@@ -47,7 +47,7 @@ Er zijn twee soorten machtigingen:
 
 Expliciete machtigingen krijgen altijd voorrang op impliciete. Het ontbreken van
 een ACL is een ernstig risico. Immers objecten zonder ACL zijn voor iedereen
-toegankelijk, terwijl een lege ACL ervoor zordt dat toegang impliciet wordt
+toegankelijk, terwijl een lege ACL ervoor zorgt dat toegang impliciet wordt
 geweigerd.
 
 \section{Bespreek hoe het mechanisme van machtigingen specifiek (en op diverse
@@ -95,8 +95,8 @@ machtigingen:
 \begin{itemize}
 	\item Het laagste niveau bestaat uit 13 atomaire of speciale
 		machtigingen, die de bouwstenen vormen voor het hogere niveau.
-		Dit zijn de kleinst mogelijke machtigingen die je kan instellen.
-		Bieden de mogelijkheid om zeer nauwkeuring het toegangsniveau te
+		Dit zijn de kleinst mogelijke machtigingen die je kan instellen 
+		en bieden de mogelijkheid om zeer nauwkeuring het toegangsniveau te
 		bepalen.
 	\item Het hoogste niveau, moleculaire of standaard machtigingen, omvat 6
 		veel gebruikte combinaties van atomaire machtigingen.
@@ -108,7 +108,7 @@ NTFS machtigingen toewijzen is niet moeilijk, maar in een grote omgeving met
 veel bronnen en gebruikers moet je zeer methodisch en consistent te werk gaan.
 De ACL editor, van een bestand of map, kan opgeroepen worden via de Security
 tabpagina van het object. Hier kunnen ACEs toegevoegd en verwijderd worden. De
-grijze slectievakjes duiden overgenomen machtigingen aan.
+grijze selectievakjes duiden overgenomen machtigingen aan.
 
 Deze inheritance of propagation is zeer handig om op een eenvoudige manier de
 toegang wil definiëren tot de volledige naamruimte van een grote maphiërarchie.
@@ -139,9 +139,9 @@ Wanneer de bestemming een container is op een ander NTFS volume, of de bestanden
 met standaard tools worden gekopieerd, vervallen de expliciete machtigingen. De
 machtigingen van de doelcontainer worden overgenomen door het object zelf en al
 zijn onderliggende objecten. Objecten die naar een niet NTFS volume worden
-gekopiëerd, verliezen alle machtigingen.
+gekopieerd, verliezen alle machtigingen.
 
-Om de machtigingen tijdens een kopieropdracht te behouden moeten speciale tools
+Om de machtigingen tijdens een kopieeropdracht te behouden moeten speciale tools
 zoals robocopy en scopy gebruikt worden.
 
 Wanneer bestanden of mappen worden verplaatst naar een container binnen

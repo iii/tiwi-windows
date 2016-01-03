@@ -72,11 +72,11 @@ expliciete vertrouwenrelatie wil maken, moet je beschikken over de domeinnamen
 en een gebruikersaccount met machtiging om vertrouwensrelaties in beide domeinen
 te maken. Elke vertrouwensrelatie krijgt een wachtwoord toegewezen, dat bekend
 moet zijn bij de beheerders van beide domeinen van de vertrouwensrelatie. Na het
-opzetten van de vertrouwensrelatie wordt dit wachtword niet meer gebruikt.
+opzetten van de vertrouwensrelatie wordt dit wachtwoord niet meer gebruikt.
 
 \subsection{Active Directory Domains en Trust snap-in}
 
-Deze snap-in is beschikbaar in domein.msc. Het aanmaken van de
+Deze snap-in is beschikbaar in domain.msc. Het aanmaken van de
 vertrouwensrelatie kan door met de rechmuisknop op een domein te klikken en
 achtereenvolgens Properties en de Trusts tabpagina te selecteren, en daarna de
 New Trust wizard op te starten.
@@ -141,15 +141,15 @@ AD, omdat het veel schaalbaarder is. Een andere mogelijk oorzaak is de
 geografische situering. Het is mogelijk dat de verschillende geografische
 locaties verbonden zijn door links met kleine bandbreedte. Dit probleem kan
 worden opgevangen door AD sites te configureren. Het replicatie verkeer kan nog
-verder worden beperkt door gebruik te maken van RODC's. Een derede mogelijkheid
-is de noodzaak aan een versschillende wachwoordbeleid voor bepaalde
+verder worden beperkt door gebruik te maken van RODC's. Een derde mogelijkheid
+is de noodzaak aan een verschillend wachwoordbeleid voor bepaalde
 gebruikersgroepen. Dit kan worden opgevangen door het domein functioneel niveau
 te verheffen naar Windows Server 2008, en een fine grained password policy in te
 stellen. Als laatste oorzaak voor verschillende NT4 master domeinen kan het zijn
 dat bepaalde onderdelen van de organizatie controle moeten kunnen uitoefenen
 over eigen bronnen en gebruikers. Dit is bij de invoering van AD de enige reden
 om aparte domeinen te behouden in de verschillende sites. De migratie gebeurt op
-een van de volgende manieren:
+één van de volgende manieren:
 \begin{enumerate}
 	\item Elk NT4 domein wordt geupgraded naar de root van een Windows
 		Server tree in hetzelfde forest. Alle gemachtigde gebruikers

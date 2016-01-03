@@ -72,10 +72,10 @@ Ook voor elke applicatiepartitie is er een aparte replicatietopologie.
 
 Windows Server replicatie is een pull, en geen push mechanisme. De
 domeincontrollers brengen elkaar wel op de hoogte van de wijzigingen, maar het
-opvragen gebeurt op iniatief van de replicatiepartner. Wijzigingen worden ook
+opvragen gebeurt op initiatief van de replicatiepartner. Wijzigingen worden ook
 opgespaard in tijdsintervallen van standaard vijf minuten en pas daarna
 verstuurd. Dit wordt propagation damping genoemd en wordt uitgeschakeld voor
-objecten die met beveiliging te maken hebben. Automatisch om het uur polling als
+objecten die met beveiliging te maken hebben. Automatisch om het uur: polling als
 er geen meldingen van een domeincontroller zijn gekomen.
 
 Windows Server replicatie is multi-threaded: een domeincontroller kan simultaan
@@ -97,21 +97,21 @@ alle domeincontrollers in het forest.
 Directory gegevens? Je hoeft het begrip site op zich niet verder te behandelen.}
 
 Tussen sites is er automatisch en continu replicatie. Het is de bedoeling een
-evenwicht te vinden tussen enerzijds behoufte aan actuele directory gegevens en
+evenwicht te vinden tussen enerzijds behoefte aan actuele directory gegevens en
 anderzijds beperkingen die door beschikbare netwerk bandbreedte opgelegd worden.
 
-Inter-site replicata vertoont heel wat implementatie verschillen met intra-site
+Inter-site replicatie vertoont heel wat implementatie verschillen met intra-site
 replicatie:
 \begin{itemize}
 	\item Enkel polling, urgent replication is bijgevolg niet mogelijk.
 	\item Standaard compressie, kan uitgeschakeld worden, reduceert volume
-		tot 40%
+		tot 40\%
 	\item Met behulp van sitekoppelingen aan te geven hoe verschillende
 		sites onderling, met rechtstreekse fysieke netwerkverbindingen,
 		verbonden zijn.
 		\begin{itemize}
 			\item KCCs genereren automatisch enkel
-				verbindignsobjecten tussen sites als er tussen
+				verbindingsobjecten tussen sites als er tussen
 				beide sites een sitekoppeling bestaat.
 			\item Fouttolerantie: AD houdt zoveel mogelijk rekening
 				met meerdere routes tussen sites om wijzigingen
