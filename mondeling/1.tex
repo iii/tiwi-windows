@@ -27,7 +27,7 @@ identificeren.}
 		het object.
 	\item[Canonical name] wordt op dezelfde manier samengesteld als de DN,
 		maar wordt op een eenvoudigere manier weergegeven:
-		\begrip{hogent.be/iii/beelsebub}. De meeste hulpmiddelen in
+		\begrip{hogent.be/iii/beelzebub}. De meeste hulpmiddelen in
 		Active Directory tonen de canonieke naam, in plaats van de DN.
 		Het wordt opgeslagen in het kenmerk \begrip{canonicalName} van
 		het object. Dit is een geconstrueerd kenmerk.
@@ -47,14 +47,14 @@ zijn toegewezen. De SID wordt opgeslagen in het \begrip{objectSid} kenmerk.
 SPN objecten worden, na aanmelding op het netwerk, gebruikt voor het verlenen
 van toegang tot domeinbronnen. Ze zijn van toepassing op gebruikeraccounts,
 computeraccounts, groepen en domeinen. SIDs zijn uniek, ook in de tijd: nieuw
-aangemaakte accounts kunnen zo nooit de rechten krijgen van een oud account.
+aangemaakte accounts kunnen zo nooit de rechten krijgen van een oude account.
 
-SIDs worden meestal voorgesteld dooe een hiërarchische string getallen
-gescheiden door koppeltekens. bv \begrip{S-1-5-x-y-z-500} S-1-5 is de standaard
+SIDs worden meestal voorgesteld door een hiërarchische string getallen
+gescheiden door koppeltekens, bv \begrip{S-1-5-x-y-z-500}. S-1-5 is de standaard
 prefix, bestaande uit een \engels{Revision Level} en een \engels{Authority
 Identifier}. X, y en z zijn 32-bit getallen specifiek voor het domein
 (\engels{Domain Subauthority Identifier}). 500 is een \engels{relative ID}
-(RID), dat nar het feitelijk object verwijst.
+(RID), dat naar het feitelijke object verwijst.
 
 Bij verplaatsing binnen hetzelfde domein blijft de SID ongewijzigd. Bij
 verplaatsing naar een ander domein zal de SID we veranderen. De GUID blijft
@@ -74,7 +74,7 @@ van de gebruiker en de UPN suffix, gekoppeld met het @-teken.
 Voor de UPN suffix zijn er een aantal alternatieven:
 \begin{itemize}
 	\item Standaard wordt de DNS naam van het domein genomen
-	\item Dikwijlst kiest men voor de DNS naar van het root domein van het
+	\item Dikwijls kiest men voor: de DNS naam van het root domein van het
 		forest
 	\item Kan ook een willekeurige alternatieve naam zijn, als deze op
 		voorhand geregistreerd is door een beheerder.
@@ -108,7 +108,7 @@ eventueel SRV records die naar het toestel verwijzen.
 \section{Enkele veel gebruikte klassen vertonen nog meer identificerende
 attributen voor hun instanties. Bespreek deze klassen en attributen}
 
-De klassen attributeSchema en classSchema zin twee veelgebruikte klassen waarvan
+De klassen attributeSchema en classSchema zijn twee veelgebruikte klassen waarvan
 de objecten terug te vinden zijn in de schema partitie. Deze objecten
 beschrijven alle objecten in de AD: classSchema objecten beschrijven de klassen
 waarvan objecten kunnen aangemaakt worden. De attributen die een klasse kan
@@ -127,7 +127,7 @@ De objecten van deze klassen hebben een viervoudige naamgeving:
 	\item[Object identifier (OID)] dient voor interne representatie. Dit
 		zijn X.500 Object IDs die worden verleend door speciale
 		autoriteiten zoals ISO, en zijn gegarandeerd uniek in alle
-		netwerken over de hele wereld. Een bedrijk kan een eigen unieke
+		netwerken over de hele wereld. Een bedrijf kan een eigen unieke
 		subtak toegewezen krijgen of kan gebruik maken van een unieke
 		subtak in een Microsoft subtak.
 \end{description}
@@ -142,14 +142,14 @@ waarin de controller zich bevindt. De informatie die in de directory is
 opgeslagen, is fysiek verdeeld in minimaal drie categorieën: \begrip{directory
 partities}
 \begin{description}
-	\item[Domaingegevens] bevatten de eigenlijke informatie over objecten in
+	\item[Domeingegevens] bevatten de eigenlijke informatie over objecten in
 		het domein (zoals gedeelde bronnen, gebruiker- en
 		computeraccounts). Bij de installatie worden een aantal
 		standaard objecten geinstalleerd door het systeem, bv de
 		beheerderaccount. Wordt gedeeld per domein, dus er zijn evenveel
 		partities met domeingegevens als er domeinen zijn in het forest.
 		De domeingegevens worden niet gedistribueerd naar andere
-		domeinen. Er wordt we een subset van alle kenmerken van alle
+		domeinen. Er wordt wel een subset van alle kenmerken van alle
 		domeinen bijgehouden in de globale catalogus.
 	\item[Configuratiegegevens] beschrijven de fysieke topologie van de
 		directory. Dit bevat onder andere een lijst van alle
@@ -173,7 +173,7 @@ partities}
 Het schema en de configuratiegegevens zijn containerobjecten in het root domein
 van het forest. Ook de eventuele applicatiepartities vormen containerobjecten
 ten opzichte van de overeenkomstige domeingegevens. Dit is een logische
-structurering, fysische bestaat het wel uit meerdere bestanden.
+structurering, fysiek bestaat het wel uit meerdere bestanden.
 
 AD servers wisselen continu gegevens uit. Elke partitie in de directory vormt
 een aparte eenheid voor replicatie, waarbij telkens een specifieke groep

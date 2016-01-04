@@ -36,7 +36,7 @@ dergelijke functies gegroepeerd op drie niveau's:
 \begin{description}
 	\item[Server rollen] (DNS, DHCP, ...) en Web Server implementeren
 		primaire serverfuncties.
-	\item[Role services] optionele, meer complexe, server rollern.
+	\item[Role services] optionele, meer complexe, server rollen.
 	\item[Features] (Powershell, SNMP, backup, ...) zorgen voor meer
 		ondersteunende functies.
 \end{description}
@@ -45,7 +45,7 @@ respectievelijk de Add Roles, Add Role Services en Add Features wizards van
 Server Manager. Dit kan ook met de ServerManagerCmd opdracht.
 
 Zowel voor lidservers als voor domeincontrollers gelden groepsbeleidinstellingen
-die gedefinieerd zijn voor het domein, de OUs of de site. Lidserver behouden, in
+die gedefinieerd zijn voor het domein, de OUs of de site. Lidservers behouden, in
 tegestelling tot domeincontrollers, een eigen lokale beveiligingsdatabank, de
 Security Account Manager (SAM).
 Doorgaans configureert men slechts een fractie van de Windows Server toestellen
@@ -56,8 +56,8 @@ globale catalogus ondersteund worden?}
 
 Indien er slechts een domein in het forest is, mogen alle domeincontrollers tot
 global catalog server worden gepromoveerd. Om het replicatieverkeer te beperken,
-zorgt me er best voor dat er steeds een global catalog server per site aanwezig
-is. De promotie gebeurt door de global catalog optie aan tevinken in de general
+zorgt men er best voor dat er steeds een global catalog server per site aanwezig
+is. De promotie gebeurt door de global catalog optie aan te vinken in de general
 tabpagina van de properties van de NSDS settings van een domeincontroller. Dit
 is terug te vinden in de AD sites and services snap-in. De global catalog server
 heeft een kopie van alle objecten van de domeingegevens van het domein waarin de
@@ -118,7 +118,7 @@ het domein of in het forest vervuld worden.
 		vergelijkt continu de kenmerken van zijn phantom objecten met de
 		kenmerken van de corresponderende objecten in externe domeinen,
 		en de kenmerken van phantom objecten in externe domeinen die
-		dooverwijzen naar eigen objecten met de kenmerken van deze
+		doorverwijzen naar eigen objecten met de kenmerken van deze
 		objecten. Hij doet hiervoor een beroep op de global catalog.
 		Omdat domeincontrollers die global catalog zijn geen phantom
 		objecten aanmaken, doordat ze reeds beschikken over een kopie
