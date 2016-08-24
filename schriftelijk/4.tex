@@ -34,7 +34,7 @@ sterkste kenmerk, een toekenning van een machtiging wordt genegeerd als die
 eerder ontzegd werd. Afwijken van deze volgorde kan enkel programmatorisch.
 
 Machtigingen zijn cumulatief. De machtigingen van een groep worden op zijn leden
-toegepast, tenzijn die machtiging elders (op de specifieke gebruiker of een
+toegepast, tenzij die machtiging elders (op de specifieke gebruiker of een
 andere groep) ontzegd werden. Machtigingen worden impliciet geweigerd.
 
 Er zijn twee soorten machtigingen:
@@ -60,7 +60,7 @@ Er zijn twee niveau's van machtigingen voor bestandstoegang: Share/SMB
 machtigingen en NTFS machtigingen.
 
 Share machtigingen krijgen de bovenhand als ze beperkender zijn dan de NTFS. Men
-zou dus de share machtigingen of FULL Control kunnen zetten voor iedereen en
+zou dus de share machtigingen op FULL Control kunnen zetten voor iedereen en
 verdere vernauwing van de rechten aan de hand van NTFS machtigingen bekomen, dit
 heeft echter 2 problemen:
 \begin{enumerate}
@@ -123,10 +123,10 @@ bestaande uit 4 tabpagina's:
 	\item Auditing: Laat toe om SACL van het object in te stellen.
 	\item Owner: Laat toe om het ownership over te nemen. Het eigenaarschap
 		kan niet eenzijdig worden overgedragen.
-	\item Biedt de voor probleemdiagnose interessante mogelijk om voor een
-		specifieke gebruiker het zelfde algoritme toe te passen dat de
-		SRM gebruikt om de uiteindelijke machtigingen op een object na
-		te gaan.
+	\item Effective permissions: Biedt de voor probleemdiagnose interessante 
+		mogelijk om voor een specifieke gebruiker het zelfde algoritme toe te 
+		passen dat de SRM gebruikt om de uiteindelijke machtigingen op een 
+		object na te gaan.
 \end{enumerate}
 
 \section{Wat gebeurt er met de machtigingen bij het verplaatsen van een bestand?

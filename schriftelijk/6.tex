@@ -39,7 +39,7 @@ De verzameling objecten die tot een groep behoren kan men verkrijgen met:
 \section{Door wie wordt het lidmaatschap van de diverse groepen bij voorkeur
 ingesteld?}
 
-Dit kan best door de beheerder gebeuren. Lidmaadschap bij een groep kan bepaalde
+Dit kan best door de beheerder gebeuren. Lidmaatschap bij een groep kan bepaalde
 machtigingen met zich meebrengen en het is de taak van de beheerder om ervoor te
 zorgen dat gebruikers niet meer rechten hebben dan dat ze nodig hebben.
 
@@ -99,14 +99,15 @@ Verschillende praktische groepen zijn oa:
 		back-uppen en terug te plaatsen, zelfs als ze geen toestemming
 		hebben om deze bestanden te lezen of te wijzigen.
 	\item[Account Operator] maken en beheren gebruikersaccounts en groepen,
-		en kunnen computers aan het domein toevoegen.
+		en kunnen computers aan het domein toevoegen. 
+		Ook aanmelden op servers en afsluiten en herstarten van servers.
 	\item[Server Operators] kunnen onder andere het systeem vanop afstand
 		uitzetten, de systeemtijd veranderen, de harde schijf
 		formatteren en mappen delen.
 	\item[Print Operators] kunnen printers delen, wissen en beheren.
 	\item[Administrators] hebben bijna elk recht. Toch krijgen beheerders
 		met de ruime bevoegdheden van deze groep geen toegang tot alle
-		bestanden en mappen.
+		bestanden en mappen (bijvoorbeeld bij gevoelige shares).
 	\item[User] kunnen programmas gebruiken, maar ze niet installeren.
 \end{description}
 
@@ -118,8 +119,14 @@ Enkele voorbeelden:
 	\item[Network] alle gebruikers die via het netwerk zijn verbonden met
 		een computer.
 	\item[Everyone] combinatie van de Interactive en Network groepen.
+		De Guest gebruiker hoort hier dus wel bij.
 	\item[Authenticated Users] alle gebruikers die geauthentificeerd zijn.
+		De Guest gebruiker hoort hier dus niet bij.
 	\item[System] het besturingssysteem, heeft bijna alle bevoegdheden.
 		Processen van het OS hebben deze rechten nodig om te kunnen
 		draaien.
+	\item[Creator Owner] de eigenaar van een object, die hierbij de 
+		volledige toegang tot dat object krijgt.
+		Deze kan dus ook de security descriptor voor dit object instellen 
+		(inclusief de ACLs).
 \end{description}
