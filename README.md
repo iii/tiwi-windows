@@ -8,3 +8,12 @@ samenvatting met per vraag de kernpunten.
 
 Bij het herhalen ondervonden dat het volstaat met typefouten, pull requests om
 deze aan te passen zijn steeds welkom :-)
+
+## Pdf genereren
+
+Om het pdf bestand voor dit document te genereren, moet men in de terminal twee keer het commando ```pdflatex``` uitvoeren op het ```main.tex``` bestand.
+
+```
+pdflatex main.tex
+pdflatex main.tex
+```

@@ -51,7 +51,9 @@ domeincontroller tegelijkertijd gewijzigd wordt. Dit wordt opgelost door de
 wijziging op het oudste tijdstip te negeren. Bij exact dezelfde tijd wordt de
 wijziging van de domeincontroller met het hoogste GUID geaccepteerd. Voor
 sommige objecten (schema objecten) is dit niet goed genoeg en kunnen verzoeken
-tot wijzigingen enkel door 1 specifieke domeincontroller verwerkt worden.
+tot wijzigingen enkel door 1 specifieke domeincontroller verwerkt worden. Bij 
+schema objecten staat de schema master in voor de verwerking, waarvan er 
+maximaal 1 in het forest is.
 
 Verwijdering van objecten biedt een bijkomend probleem: men moet vermijden dat
 het object opnieuw gecreëerd wordt door replicatie vanuit een andere
@@ -96,9 +98,10 @@ alle domeincontrollers in het forest.
 \section{Welke impact hebben sites met betrekking tot de replicatie van Active
 Directory gegevens? Je hoeft het begrip site op zich niet verder te behandelen.}
 
-Tussen sites is er automatisch en continu replicatie. Het is de bedoeling een
-evenwicht te vinden tussen enerzijds behoefte aan actuele directory gegevens en
-anderzijds beperkingen die door beschikbare netwerk bandbreedte opgelegd worden.
+Binnen sites is er automatisch en continu replicatie. Tussen sites onderling is 
+het de bedoeling om een evenwicht te vinden tussen enerzijds behoefte aan 
+actuele directory gegevens en anderzijds beperkingen die door beschikbare 
+netwerk bandbreedte opgelegd worden.
 
 Inter-site replicatie vertoont heel wat implementatie verschillen met intra-site
 replicatie:
