@@ -37,7 +37,7 @@ intra-site replicatie:
 		verschillende sites onderling, met rechtstreekse fysieke
 		netwerkverbindingen, verbonden zijn. De KCC's genereren
 		automatisch enkel verbindingsobjecten tussen sites als er tussen
-		beide sites een sitekoppeling bestaan. Een site zonder
+		beide sites een sitekoppeling bestaat. Een site zonder
 		sitekoppelingen is zinloos, want er worden dan geen
 		verbindingsobjecten aangemaakt.
 \end{itemize}
@@ -54,7 +54,7 @@ ervoor gezorgd dat KCCs zich optimaal aanpassen aan de siteconfiguratie.
 
 \section{Welke relaties bestaan er tussen sites, domeinen, domeincontrollers en
 global catalogs? Druk deze relaties ondermeer uit in termen zoals ... een X
-vereist minimaarl/exact/maximaarl Ys.... Geef een verantwoording voor elk van
+vereist minimaal/exact/maximaal Ys.... Geef een verantwoording voor elk van
 deze beweringen.}
 
 Er is geen enkel verband nodig tussen sites en domeinen. Meerdere sites in 1
@@ -74,7 +74,8 @@ Indien het forest slechts uit één domein bestaat, is er geen enkel bezwaar om
 van alle domeincontrollers een global catalogus te maken. Dankzij caching kan
 het inlogproces van een gebruiker afgewerkt worden, zonder een global catalogus
 te contacteren. Hiervoor moet het forest minimaal op Windows Server 2003 forest
-functioneel niveau staan.
+functioneel niveau staan, waarbij deze universal group membership caching 
+ondersteund wordt.
 
 \section{Hoe wordt bepaald tot welke site computers behoren?}
 
@@ -109,7 +110,7 @@ latentieperiode voor propagation damping bij intra-site replicatie.
 
 Meer elementaire configuratiebewerkingen met sites kunnen via de MMC snap-in:
 Active Directory Sites and Services. Deze wordt aangeboden in de standaard
-console sssite.msc. Wordt gebruikt om sites te creëren en om servers naar een
+console dssite.msc. Wordt gebruikt om sites te creëren en om servers naar een
 andere site te verplaatsen. Ook kan met behulp van site koppelingen worden
 aangegeven hoe de verschillende sites onderling verbonden zijn. Welke protocol,
 het (gebruiks)schema, de bandbreedte en de frequentie kan hier ingesteld worden.

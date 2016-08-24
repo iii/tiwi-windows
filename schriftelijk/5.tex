@@ -30,7 +30,7 @@ lidservers van het domein.
 Lokale groepen worden typisch gebruikt om rechten en machtigingen toe te kennen,
 en bevatten eerder andere groepen dan gebruikers.
 
-\subsection{Globale veiligheisgroepen}
+\subsection{Globale veiligheidsgroepen}
 
 Globale groepen kunnen alleen gebruikers en andere globale groepen uit hetzelfde
 domein omvatten. Ze zijn zichtbaar in elk domein van het forest of andere
@@ -45,7 +45,7 @@ machtigingen of rechten nodig zullen hebben.
 
 Universele groepen zijn nieuw voor Windows Server en zijn enkel te gebruiken in
 domeinen met minstens Windows 2000 native functioneel niveau. Ze kunnen leden
-uit elk domein van het forest (niet van andere trusting domeinen) bevatten en
+uit elk domein van het forest (niet van andere trusted domeinen) bevatten en
 zijn zichtbaar in elk domein van het forest (niet in andere trusting domeinen).
 
 Universele groepen worden net als lokale groepen typisch gebruikt om rechten en
@@ -69,12 +69,12 @@ Illustreer aan de hand van concrete voorbeelden.}
 		veiligheidsoverwegingen alle lidservers te configureren als
 		domeincontrollers.
 	\item[Globale groepen] worden eerder gebruikt als containers voor
-		gebruikers die dezelfde machtigigen of rechten nodig zullen
+		gebruikers die dezelfde machtigingen of rechten nodig zullen
 		hebben en als leden van andere groepen, in het domein zelf of in
 		een trusting domein. Als je een verzameling gebruikers,
 		afkomstig uit een ander domein toegang wil verlenen tot een
 		bepaalde bron, dan kun je deze verzameling best groeperen in een
-		glogale groep (van het vreemde domein) en deze lid maken van een
+		globale groep (van het vreemde domein) en deze lid maken van een
 		lokale groep, gekoppeld aan de bron.
 	\item[Universele groepen] verenigt op het eerste zicht de beste
 		karakteristieken van zowel lokale als globale groepen.

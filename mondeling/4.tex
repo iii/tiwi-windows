@@ -99,8 +99,8 @@ De voordelen van dit niveau tov Windows Server 2000 Native functioneel niveau:
 		bereikbaar is.
 	\item Group policies filteren, op basis van beveiligingsgroepen, maar
 		ook met behulp van WMI scripts. Filteren is verhinderen dat het
-		GPO op specifieke groepen van gebruikers en computers toegepast
-		wordt.
+		Group Policy Object (GPO) op specifieke groepen van gebruikers en 
+		computers toegepast wordt.
 \end{itemize}
 
 \subsubsection{Niveau 3: Windows Server 2008}
@@ -108,10 +108,10 @@ De voordelen van dit niveau tov Windows Server 2000 Native functioneel niveau:
 De voordelen van dit niveau tov Windows Server 2003 functioneel niveau:
 \begin{itemize}
 	\item Aanvullende schema klassen en objecten. Waardoor ondermeer de
-		werkpost, waarop een gebruik het laatst zich met succes aagemeld
+		werkpost, waarop een gebruiker het laatst zich met succes aangemeld
 		heeft, en het aantal mislukte pogingen sindsdien, opgevraagd
 		kan worden.
-	\item Encryptie van het Kerberos protocol met langere sleutels.
+	\item Encryptie van het Kerberos protocol met langere sleutels (128 en 256 bits). 
 	\item Fijnkorrelig wachtwoordbeleid (fine-grained password policies),
 		zodat wachtwoordenrestricties niet langer globaal zijn voor het
 		gehele domein, maar specifiek ingesteld kunnen worden voor
@@ -137,9 +137,9 @@ de standaard instelling voor nieuwe installaties. We bespreken voor de
 opeenvolgende forest functionele niveaus steeds welke functionaliteit er is
 bijgekomen tegen over het vorige niveau.
 
-\subsubsection{Niveau 2: Windows 2003}
+\subsubsection{Niveau 2: Windows Server 2003}
 
-De voordelen van tov Windows 2000 forest functioneel niveau:
+De voordelen van t.o.v. Windows 2000 forest functioneel niveau:
 \begin{itemize}
 	\item Het hergebruiken van gedeactiveerde attributen en klassen.
 	\item Dynamische hulpklassen. Bij creatie van een object kan er gekozen
@@ -154,20 +154,20 @@ De voordelen van tov Windows 2000 forest functioneel niveau:
 		domeinen in een forest.
 	\item Transitieve vertrouwensrelaties tussen verschillende forests.
 	\item Read-only Windows Server 2008+ domeincontrollers. Ideaal voor
-		locaties waar de domeincontroller fysiche niet beveiligd kan
+		locaties waar de domeincontroller fysiek niet beveiligd kan
 		worden. Er kunnen geen aanpassingen van de AD gegevens gebeuren
 		op deze domeincontroller.
-	\item Efficiëntere KCC algoritmen voor het construeren van de
+	\item Efficiëntere Knowledge Consistency Checker (KCC) algoritmen voor het construeren van de
 		replicatietopologie.
 	\item Replicatie van de individuele waarden van multi-valued attributen.
 \end{itemize}
 
-\subsubsection{Niveau 3: Windows 2008}
+\subsubsection{Niveau 3: Windows Server 2008}
 
 Dit niveau biedt geen aanvullende functionaliteit tov Windows Server 2003 forest
 functioneel niveau. Toch is het om beveiligingsredenen van belang om op dit
-niveau over te schakelen, bijvoorbeeld indien met Read Only Domain Controllers
-(RODCs) met RODC filtered attribtue set introduceert. Dit laatste is een
+niveau over te schakelen, bijvoorbeeld indien men Read Only Domain Controllers
+(RODCs) met RODC filtered attribute set introduceert. Dit laatste is een
 verzameling van kenmerken die niet naar een RODC gerepliceerd worden.
 
 \section{Hoe kan men detecteren op welk niveau een Active Directory omgeving

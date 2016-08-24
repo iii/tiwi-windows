@@ -7,7 +7,7 @@ gebruikers in het ene, trusted domein kunnen geverifieerd worden door de
 domeincontroller in het andere, trusting domein. Vertrouwensrelaties worden
 weergegeven met een pijl in de richting van het trusted domein. Een gebruiker
 kan pas toegang krijgen tot bronnen in een ander domein als er een
-vertrouwenspad is van het trusting domein naar het trusting domein. Een
+vertrouwenspad is van het trusting domein naar het trusted domein. Een
 vertrouwenspad is een continue rij vertrouwensrelaties tussen domeinen. Dat een
 gebruiker door een trusting domeincontroller is geverifieerd, wil nog niet
 automatisch zeggen dat de gebruiker toegang heeft tot de bronnen in dat domein.
@@ -49,15 +49,15 @@ Forest en realm vertrouwensrelaties zijn expliciete vertrouwensrelaties: trusts
 die je zelf maakt, in tegenstelling tot de vertrouwensrelaties die automatisch
 gemaakt worden tijdens de creatie van het domein.
 
-Een verkorte vertrouwensrelatie is ook een expliciete vertrouwenrelatie en
-maakt het mogelijk om een vertrouwenspad tussen 2 domeinen, in grote en complexe
-trees, te verkorten. Dit moet het aanmeldingsproces versnellen.
+Een \textbf{verkorte vertrouwensrelatie} is ook een expliciete vertrouwenrelatie 
+en maakt het mogelijk om een vertrouwenspad tussen 2 domeinen, in grote en 
+complexe trees, te verkorten. Dit moet het aanmeldingsproces versnellen.
 
-Het laatste type expliciete vertrouwensrelatie is de externe vertrouwensrelatie.
-Dit is een enkelvoudige vertrouwingsrelatie waarbij één domein een ander domein
-vertrouwt. Deze zijn niet-transitief. Je kan geen externe relatie instellen
-tussen AD domeinen in hetzelfde forest (heeft al automatische relaties). Dit kan
-wel ingesteld worden tussen:
+Het laatste type expliciete vertrouwensrelatie is de 
+\textbf{externe vertrouwensrelatie}. Dit is een enkelvoudige vertrouwingsrelatie 
+waarbij één domein een ander domein vertrouwt. Deze zijn niet-transitief. Je kan 
+geen externe relatie instellen tussen AD domeinen in hetzelfde forest (heeft al 
+automatische relaties). Dit kan wel ingesteld worden tussen:
 \begin{itemize}
 	\item individuele domeinen in een ander forest.
 	\item met NT 4 domeinen
@@ -100,7 +100,7 @@ vertrouwensrelaties en hun toestand.
 		Filtering uitschakelt, dan verwerkt het trusting domein ook de
 		SIDs opgeslagen in het sIDHistory attribuut. Malfide beheerders
 		in het trusted domein kunnen langs deze weg zichzelf meer
-		machtigingen en rechten toeeigenen in het trusting domein.
+		machtigingen en rechten toe{\"e}igenen in het trusting domein.
 \end{itemize}
 
 \section{Welke verschillen zijn er in praktijk tussen NT 4.0 en Windows Server
@@ -155,7 +155,7 @@ om aparte domeinen te behouden in de verschillende sites. De migratie gebeurt op
 		Server tree in hetzelfde forest. Alle gemachtigde gebruikers
 		krijgen hierdoor potentiële toegang tot alle bronnen in alle
 		domeinen van het forest. Het forest kan een gemeenschappelijk
-		schema, gemeeschppelijke configuratiegegevens en een
+		schema, gemeenschappelijke configuratiegegevens en een
 		gemeenschappelijke global catalog delen.
 	\item Als alternatief kan elk NT4 domein worden geupgraded naar een
 		subdomein van een artificieel root domein van dezelfde tree. Dit
